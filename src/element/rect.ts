@@ -24,8 +24,8 @@ export const createSelectionBox = (stage: Konva.Stage, themeType?: Theme) => {
 };
 
 export const removeSelectionBox = (stage: Konva.Stage) => {
-  const layer = stage.findOne(`.selectionBox`);
-  layer?.remove();
+  const box = stage.findOne(`.selectionBox`);
+  box?.remove();
 };
 
 export const defaultRect = (position: RectConfig, themeType?: Theme) => {

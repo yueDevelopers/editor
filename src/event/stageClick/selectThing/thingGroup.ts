@@ -15,7 +15,6 @@ export default (cb: onSelectCallBackFun, e: KonvaEventObject<MouseEvent>) => {
       idArr.push(data.propertyId);
     }
   });
-
   cb(
     e.target.className === "Arrow" || e.target.className === "Line"
       ? "line"
