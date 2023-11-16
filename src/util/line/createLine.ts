@@ -31,7 +31,7 @@ export const finishLine = (
   if (isComponentChildren(begin)) {
     begin.parent.parent.setAttrs({ draggable: true });
     begin = begin.parent;
-  } else {
+  } else if (begin.name() !== "thingImage") {
     begin.setAttrs({ draggable: true });
   }
 

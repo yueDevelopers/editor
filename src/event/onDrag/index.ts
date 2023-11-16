@@ -20,6 +20,8 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
               (node: Konva.Node) => node.name() === "thingImage"
             )
           );
+        } else if (group.name() === "thingImage") {
+          imgs.push(group);
         }
       });
     }
@@ -55,6 +57,8 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
               (ele: Konva.Node) => ele.name() === "thingImage"
             );
             dealRelation(img, ie.getStage(), imgs);
+          } else if (ele.name() === "thingImage") {
+            dealRelation(ele, ie.getStage(), imgs);
           }
         });
       } else {

@@ -49,44 +49,67 @@ export const setRightAngleLineBeginOrEnd = (
   if (index === 0) {
     now = points[0];
     const next = points[1];
+    let direction;
+    // 横线
+    if (now.y === next.y) {
+      direction = "horizontal";
+      // 竖线
+    } else if (now.x === next.x) {
+      direction = "vertical";
+    }
     // 如果直线加点
     if (points.length === 2) {
-      // 用target避免斜向拖动问题
       points.splice(0, 0, { x: target.x, y: target.y });
+      // 调整临点保持垂直
+      if (direction === "horizontal") {
+        now.x = target.x;
+      } else if (direction === "vertical") {
+        now.y = target.y;
+      }
+      mergeRightAngleLinePoint(points);
     } else {
-      // 横线
-      if (now.y === next.y) {
+      // 调整临点保持垂直
+      if (direction === "horizontal") {
         next.y = target.y;
-
-        // 竖线
-      } else if (now.x === next.x) {
+      } else if (direction === "vertical") {
         next.x = target.x;
       }
+      now.x = target.x;
+      now.y = target.y;
     }
-
-    now.x = target.x;
-    now.y = target.y;
   } else {
     // 修正加点问题
     index = points.length - 1;
     now = points[index];
     const prev = points[index - 1];
+    let direction;
+    // 横线
+    if (now.y === prev.y) {
+      direction = "horizontal";
+      // 竖线
+    } else if (now.x === prev.x) {
+      direction = "vertical";
+    }
     // 如果直线加点
     if (points.length === 2) {
-      // 用target避免斜向拖动问题
       points.push({ x: target.x, y: target.y });
+      // 调整临点保持垂直
+      if (direction === "horizontal") {
+        now.x = target.x;
+      } else if (direction === "vertical") {
+        now.y = target.y;
+      }
+      mergeRightAngleLinePoint(points);
     } else {
-      // 横线
-      if (now.y === prev.y) {
+      // 调整临点保持垂直
+      if (direction === "horizontal") {
         prev.y = target.y;
-        // 竖线
-      } else if (now.x === prev.x) {
+      } else if (direction === "vertical") {
         prev.x = target.x;
       }
+      now.x = target.x;
+      now.y = target.y;
     }
-
-    now.x = target.x;
-    now.y = target.y;
   }
   return points;
 };
