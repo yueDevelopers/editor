@@ -41,7 +41,6 @@ export const dealRelation = (
           });
         }
       }
-      debugger;
       const pointsRes = setRightAngleLineBeginOrEnd(points, 0, { x, y });
       line.setAttrs({ points: getUsePointUn(pointsRes) });
     } else {
@@ -90,7 +89,6 @@ export const dealRelation = (
           });
         }
       }
-      debugger;
       const pointsRes = setRightAngleLineBeginOrEnd(
         points,
         points!.length - 1,
