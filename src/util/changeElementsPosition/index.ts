@@ -87,30 +87,29 @@ const setElPosition: Record<
       });
     });
   },
+  // 分布对齐
   distributionY(stage, nodes, { minY, maxY, totalY }) {
-    const signal = (maxY - minY - totalY) / nodes.length;
+    const signal = (maxY - minY - totalY) / (nodes.length - 1);
     let counter = 0;
     nodes.forEach((element: Konva.Group, index: number) => {
       const imgEle = getImgNode(element);
-      const y = imgEle.absolutePosition().y / stage.scaleY();
-      element.move({
-        x: 0,
-        y: minY + counter + index * signal - y,
+      element.setAbsolutePosition({
+        x: element.getAbsolutePosition().x,
+        y: (minY + counter + index * signal) * stage.scaleY(),
       });
-      counter += imgEle.height() / stage.scaleY();
+      counter += imgEle.getClientRect().height / stage.scaleY();
     });
   },
   distributionX(stage, nodes, { minX, maxX, totalX }) {
-    const signal = (maxX - minX - totalX) / nodes.length;
+    const signal = (maxX - minX - totalX) / (nodes.length - 1);
     let counter = 0;
     nodes.forEach((element: Konva.Group, index: number) => {
       const imgEle = getImgNode(element);
-      const x = imgEle.absolutePosition().x / stage.scaleX();
-      element.move({
-        x: minX + counter + index * signal - x,
-        y: 0,
+      element.setAbsolutePosition({
+        x: (minX + counter + index * signal) * stage.scaleX(),
+        y: element.getAbsolutePosition().y,
       });
-      counter += imgEle.width() / stage.scaleX();
+      counter += imgEle.getClientRect().width / stage.scaleX();
     });
   },
 };
@@ -161,15 +160,16 @@ export default (ie: INLEDITOR, type: AlignType) => {
       // 如果是组转回thingImage
       const imgEle = getImgNode(thingGroup);
       imgNodes.push(imgEle);
-
       const x = imgEle.absolutePosition().x / stage.scaleX();
       const y = imgEle.absolutePosition().y / stage.scaleY();
       const MAXX =
-        (imgEle.absolutePosition().x + imgEle.width()) / stage.scaleX();
+        (imgEle.absolutePosition().x + imgEle.getClientRect().width) /
+        stage.scaleX();
       const MAXY =
-        (imgEle.absolutePosition().y + imgEle.height()) / stage.scaleY();
-      totalX += imgEle.width() / stage.scaleX();
-      totalY += imgEle.height() / stage.scaleY();
+        (imgEle.absolutePosition().y + imgEle.getClientRect().height) /
+        stage.scaleY();
+      totalX += imgEle.getClientRect().width / stage.scaleX();
+      totalY += imgEle.getClientRect().height / stage.scaleY();
       if (MAXX > maxX) {
         maxX = MAXX;
       }
