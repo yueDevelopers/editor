@@ -4,8 +4,6 @@ import { Child, GroupNames, Parent, groupNames } from "./group";
 import { thingTextInfo } from "../data/cdata";
 import { THINGTEXT, THINGTEXTINFO } from "../data/dropData";
 import layer from "../util/layer";
-import { getCustomAttrs, setCustomAttrs } from "../util/customAttr";
-import { toSelect } from "@/event/selectItem";
 import { Group } from "konva/lib/Group";
 import INLEDITOR from "..";
 import buttonText from "./texts/buttonText";

@@ -8,6 +8,7 @@ import inputText from "@/element/texts/inputText";
 import { UUID } from "@/util/uuid";
 import selectItem, { toSelectOne } from "../selectItem";
 import { dealRelation } from "@/util/element/relation";
+import { turnDrag } from "@/util/line/rect";
 
 export const keydown = (e, ie) => {
   const stage = ie.getStage();
@@ -37,19 +38,20 @@ export const keydown = (e, ie) => {
     Array.from(eles).forEach((element: HTMLElement) => {
       element.style.cursor = "grab";
     });
-
+    turnDrag(stage, false);
     ie.getStage().setAttrs({ draggable: true });
-    ie.setDrawState("dragStage");
+    // ie.setDrawState("dragStage");
   }
 };
 export const keyup = (e, ie) => {
+  const stage = ie.getStage();
   if (e.code === "Space") {
     const eles = document.getElementById("myCanvas").children;
     Array.from(eles).forEach((element: HTMLElement) => {
       element.style.cursor = "default";
     });
+    turnDrag(stage, true);
     ie.getStage().setAttrs({ draggable: false });
-    ie.setDrawState("default");
   } else if (e.code === "ArrowUp") {
     const transformers = ie.getStage().findOne("Transformer");
     const nodes = transformers?.getNodes();

@@ -7,7 +7,7 @@ import computedXY from "../computedXY";
 export const addGrid = (ie: INLEDITOR) => {
   const step = ie.opt.step;
   const stage = ie.getStage();
-  const utilLay = layer(stage, "thing");
+  const utilLay = layer(stage, "under");
   const field: Konva.Node = ie.getStage().findOne(".field");
   const x =
     (field.getClientRect().x - field.getAbsolutePosition().x) / stage.scaleX();

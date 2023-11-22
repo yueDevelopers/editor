@@ -21,7 +21,7 @@ export default (ie: INLEDITOR, json?: string | null) => {
       width: offsetWidth,
       height: offsetHeight,
       background: "#dddddd",
-      draggable: isPreview ? false : true,
+      draggable: false,
     });
     ie.setStage(stage);
   } else {

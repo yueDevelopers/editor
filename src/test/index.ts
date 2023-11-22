@@ -9,7 +9,4 @@ export default (inlEditor: INLEDITOR) => {
     fill: "red",
     radius: 2,
   });
-
-  const layerBox = layer(inlEditor.getStage(), "test");
-  layerBox.add(Rect);
 };

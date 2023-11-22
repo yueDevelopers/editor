@@ -13,6 +13,7 @@ import inputText from "@/element/texts/inputText";
 import thing from "@/data/thing";
 import { UUID } from "@/util/uuid";
 import { getNodeSize } from "@/util/element/size";
+import { getChooseGroup, getGroupNodes } from "@/util/element/group";
 
 // 获取需要 框选的元素们
 const getSelectNode = (selectTarget: Shape<ShapeConfig> | Stage) => {
@@ -195,8 +196,17 @@ const selectEvent = (ie: INLEDITOR, e: KonvaEventObject<any>) => {
     Transformers.draw();
   } else {
     // 没有按住shift
+    const choosedGroupId = getChooseGroup(ie);
     resetEvent(stage);
+
     nodes.push(node);
+    // 如果选中的是组元素
+    if (node.attrs.groupId) {
+      if (choosedGroupId !== node.attrs.groupId) {
+        nodes.length = 0;
+        nodes.push(...getGroupNodes(ie, node.attrs.groupId));
+      }
+    }
     if (ie.opt.isPreview && node.name() === groupNames.thingInputGroup) {
       inputText.focus(node);
       return;
@@ -212,7 +222,7 @@ const selectEvent = (ie: INLEDITOR, e: KonvaEventObject<any>) => {
 export default (ie: INLEDITOR) => {
   const stage = ie.getStage();
   // 整体逻辑：如果点击画布直接清掉选择，如果是其他重置或者增加选择
-  stage.on("click tap", (e) => {
+  stage.on("mousedown tap", (e) => {
     // 预览选择输入框
     if (
       ie.opt.isPreview &&

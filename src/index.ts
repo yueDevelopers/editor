@@ -52,6 +52,7 @@ import {
   resetOneToImage,
 } from "./util/initStage/reset/resetOneToOne";
 import { undoReset } from "./util/history";
+import { addGroup } from "./util/element/group";
 
 export type DrawState =
   | "Line"
@@ -317,6 +318,11 @@ class INLEDITOR {
 
   removeText(iu: string, ids: Array<string | SpecialCode.all>) {
     removeTextEle(this, iu, ids);
+  }
+  // 组
+  groups: any[] = [];
+  createGroup() {
+    addGroup(this);
   }
 
   // 获取画布上所有物模型的id

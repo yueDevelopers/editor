@@ -11,11 +11,15 @@ onMounted(() => {
 });
 const setDrawState = (state: DrawState) => {
   editor.setDrawState(state);
-  editor.thingLayer.children.forEach((element: Konva.Node) => {
-    if (element.name() === "selfShape") {
-      element.name("thingImage");
-    }
-  });
+  // 连线专用
+  // editor.thingLayer.children.forEach((element: Konva.Node) => {
+  //   if (element.name() === "selfShape") {
+  //     element.name("thingImage");
+  //   }
+  // });
+};
+const addGroup = () => {
+  editor.createGroup();
 };
 </script>
 
@@ -24,6 +28,7 @@ const setDrawState = (state: DrawState) => {
     <div class="btns">
       <button @click="setDrawState('Rect')">加矩形</button>
       <button @click="setDrawState('rightAngleLine')">连线</button>
+      <button @click="addGroup">建组</button>
     </div>
     <div id="flowChart"></div>
   </div>

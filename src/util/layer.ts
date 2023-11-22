@@ -1,9 +1,9 @@
 import Konva from "konva";
 
-type LayerTypes = "test" | "thing" | "line" | "util";
+type LayerTypes = "under" | "thing" | "line" | "util";
 
 export const LAYER: Record<LayerTypes, LayerTypes> = {
-  test: "test",
+  under: "under",
   thing: "thing", // text、thing、 shape
   line: "line",
   util: "util",

@@ -33,6 +33,7 @@ export const resetImageToOne = (componentName, id, ie) => {
   let texts = [];
   let thingGroup;
   let customAttr = getCustomAttrs(node);
+  let thingGroupAttr = node.attrs;
   node.children.forEach((child: Konva.Node) => {
     if (child.name() === "thingImage") {
       attrs = child.attrs;
@@ -68,6 +69,7 @@ export const resetImageToOne = (componentName, id, ie) => {
     thingGroup = storeHouse.add(customAttr.thing, node.position());
   }
   thingGroup.children[0].setAttrs({ ...attrs });
+  thingGroup.setAttrs({ ...thingGroupAttr });
   texts.forEach((ele) => {
     thingGroup.add(ele);
   });
