@@ -15,6 +15,7 @@ export default (ie: INLEDITOR, json?: string | null) => {
     stage.destroy();
     keyDown(ie, false);
   }
+  // konva.autoDrawEnabled = false;
   if (json) {
     stage = konva.Node.create(json, id);
     stage.setAttrs({

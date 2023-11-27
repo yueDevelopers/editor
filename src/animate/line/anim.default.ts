@@ -45,9 +45,9 @@ export default function (this: LineAnimate) {
       duration: (this.speed * distance) / 500,
       onFinish: () => {
         if (this.runState) {
-          init(i);
+          animate.reset();
+          animate.play();
         }
-        return false;
       },
     });
     animate.play();
@@ -67,6 +67,7 @@ export default function (this: LineAnimate) {
   };
   this.destroy = () => {
     this.runState = false;
+    console.log("线动画销毁");
     animate.pause();
     this.opt.line.luminance(0);
     this.opt.line.saturation(0);

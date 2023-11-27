@@ -123,6 +123,7 @@ class COALANIM {
   }
   destroy() {
     this.stop();
+    console.log("煤动画销毁");
     this.animGroup.destroy();
   }
   anim() {
@@ -148,9 +149,9 @@ class COALANIM {
         } else {
           this.animGroup.x(right);
         }
-        this.anim();
+        tween.reset();
+        tween.play();
       }
-      tween.destroy();
     };
   }
 }

@@ -8,7 +8,12 @@ import INLEDITOR from "@/index";
 export type onSelectCallBackFun = (
   type: "thing" | "shape" | "thingText" | "stage" | string,
   e: {
-    target: Konva.Group | Konva.Rect | Shape<ShapeConfig> | Konva.Stage;
+    target?:
+      | Konva.Group
+      | Konva.Rect
+      | Shape<ShapeConfig>
+      | Konva.Node
+      | Konva.Node[];
     parent?: Konva.Group | Konva.Rect | Shape<ShapeConfig> | Konva.Stage;
   },
   data?: {

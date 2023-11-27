@@ -157,7 +157,13 @@ export const toSelect = (ie: INLEDITOR, nodes: Array<Konva.Node>, cb?) => {
   const Transformers = createTran(undefined, ie);
   Transformers.nodes(nodes);
   layer(stage, "util").add(Transformers);
-  cb?.("things", {}, {});
+  cb?.(
+    "things",
+    {
+      target: nodes,
+    },
+    {}
+  );
   return Transformers;
 };
 
@@ -217,12 +223,18 @@ const selectEvent = (ie: INLEDITOR, e: KonvaEventObject<any>) => {
     Transformers.nodes(nodes);
     // getNodeSize(node);
   }
+  // const res: Konva.Node[] = Transformers?.getNodes();
+  // if (res.length > 1) {
+  //   ie.opt.onSelectCb("group", { target: res });
+  // } else {
+  //   ie.opt.onSelectCb(res[0].name(), { target: res[0] });
+  // }
 };
 
 export default (ie: INLEDITOR) => {
   const stage = ie.getStage();
   // 整体逻辑：如果点击画布直接清掉选择，如果是其他重置或者增加选择
-  stage.on("mousedown tap", (e) => {
+  stage.on("click tap", (e) => {
     // 预览选择输入框
     if (
       ie.opt.isPreview &&
