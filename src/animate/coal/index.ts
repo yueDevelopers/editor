@@ -40,6 +40,7 @@ class COALANIM {
   }
 
   startX = 0;
+  clipGroup;
 
   async reset(uuid: string, imgUrl: string) {
     this.cacheCoal = await drawCoal(imgUrl);
@@ -69,7 +70,7 @@ class COALANIM {
       y: y - height / scale,
     });
 
-    const clipGroup = new Konva.Group({
+    this.clipGroup = new Konva.Group({
       clip: {
         x: x,
         y: y - height / scale,
@@ -79,26 +80,23 @@ class COALANIM {
       },
       name: "clip",
     });
-    clipGroup.add(this.animGroup);
-    layerthing.add(clipGroup);
+    this.clipGroup.add(this.animGroup);
+    layerthing.add(this.clipGroup);
     layerthing.draw();
-    const state = getCustomAttrs(this.animEl).state;
 
+    this.addCoal();
+    this.animInit();
+    const state = getCustomAttrs(this.animEl).state;
     if (state === 1) {
       this.start();
+    } else {
+      this.stop();
     }
   }
 
   runState = false;
+  tween; // 动画对象
 
-  start() {
-    if (this.runState) {
-      return;
-    }
-    this.runState = true;
-    this.addCoal();
-    this.anim();
-  }
   addCoal() {
     const { width } = this.animEl.getClientRect();
     for (let i = width / -30 - 1; i <= width / 30 + 1; i++) {
@@ -114,19 +112,7 @@ class COALANIM {
       this.animGroup.add(node);
     }
   }
-  stop() {
-    this.runState = false;
-    clearInterval(this.tim);
-    this.animGroup.children.forEach((node) => {
-      node.destroy();
-    });
-  }
-  destroy() {
-    this.stop();
-    console.log("煤动画销毁");
-    this.animGroup.destroy();
-  }
-  anim() {
+  animInit() {
     const { width } = this.animEl.getClientRect();
     const scale = this.stage.scaleX();
     const point = this.animEl.getAbsolutePosition();
@@ -135,24 +121,43 @@ class COALANIM {
     if (this.direction !== "left") {
       this.animGroup.x(right);
     }
-    const tween = new Konva.Tween({
+    this.tween = new Konva.Tween({
       node: this.animGroup,
       // rotation: 360,
       duration: 2,
       x: this.direction === "left" ? right : this.startX,
     });
-    tween.play();
-    tween.onFinish = () => {
+    this.tween.play();
+    this.tween.onFinish = () => {
       if (this.runState) {
         if (this.direction === "left") {
           this.animGroup.x(this.startX);
         } else {
           this.animGroup.x(right);
         }
-        tween.reset();
-        tween.play();
+        this.tween.reset();
+        this.tween.play();
       }
     };
+  }
+  start() {
+    if (this.runState) {
+      return;
+    }
+    this.runState = true;
+    this.clipGroup.setAttrs({ visible: true });
+    this.tween.reset();
+    this.tween.play();
+  }
+  stop() {
+    this.runState = false;
+    this.tween.pause();
+    this.clipGroup.setAttrs({ visible: false });
+  }
+  destroy() {
+    this.stop();
+    console.log("煤动画销毁");
+    this.animGroup.destroy();
   }
 }
 

@@ -5,7 +5,8 @@ import _ from "lodash";
 import { UUID } from "src/util/uuid";
 import "../assets/gifler.js";
 
-const cacheImgList: Record<string, Konva.Image> = {};
+const cacheImgArr: any[] = [];
+// const cacheImgList: Record<string, Konva.Image> = {};
 export const createImage: (
   img: string,
   layer?: Konva.Layer
@@ -13,17 +14,18 @@ export const createImage: (
   if (!img || img === "null") {
     img = "/micro-assets/platform-web/close.png";
   }
-  if (cacheImgList[img]) {
-    const image = cacheImgList[img].clone();
-    image.setId(UUID());
-    return Promise.resolve(image);
-  }
-  return new Promise<Konva.Image | Event>((res, rej) => {
+  console.log("新图片");
+  // if (cacheImgList[img]) {
+  //   const image = cacheImgList[img].clone();
+  //   image.setId(UUID());
+  //   return Promise.resolve(image);
+  // }
+  return new Promise<Konva.Image>((res, rej) => {
     if (img.indexOf(".gif") >= 0) {
       const canvas = document.createElement("canvas");
       // use external library to parse and draw gif animation
       function onDrawFrame(ctx, frame) {
-        if (!layer.attrs.stopGif) {
+        if (!layer.attrs.stopGif && image.attrs.runGif) {
           // update canvas size
           canvas.width = frame.width;
           canvas.height = frame.height;
@@ -36,8 +38,7 @@ export const createImage: (
 
       (window as any).gifler(img).frames(canvas, onDrawFrame);
       const image = new Konva.Image({
-        // myWidth: 200,
-        // myHeight: 100,
+        runGif: true,
         image: canvas,
         name: "thingImage",
         id: UUID(),
@@ -55,9 +56,9 @@ export const createImage: (
             name: "thingImage",
             id: UUID(),
           });
-          darthNode.cache();
-          cacheImgList[img] = darthNode;
-          res(cacheImgList[img].clone());
+          // darthNode.cache();
+          // cacheImgList[img] = darthNode;
+          res(darthNode);
         },
         (err: Event) => {
           img = "/micro-assets/platform-web/close.png";
@@ -70,9 +71,7 @@ export const createImage: (
               name: "thingImage",
               id: UUID(),
             });
-            darthNode.cache();
-            cacheImgList[img] = darthNode;
-            res(cacheImgList[img].clone());
+            res(darthNode);
           });
         }
       );
@@ -105,11 +104,19 @@ export const changeThingImage = async (
   layer: Konva.Layer
 ) => {
   const parent = imageNode.parent;
-  const data = _.cloneDeep(imageNode.getAttrs());
-  imageNode.destroy();
-  const newImage = await createImage(src, layer);
-  newImage.getAttrs().image.src = src;
-  delete data.image;
-  newImage.setAttrs(data);
-  parent?.add(newImage);
+  const old = cacheImgArr.find(
+    (ele) => ele.parentId === parent.id() && ele.src === src
+  );
+  if (old) {
+    old.img.setAttrs({ visible: true, runGif: true });
+  } else {
+    const newImage = await createImage(src, layer);
+    newImage.getAttrs().image.src = src;
+    const data = _.cloneDeep(imageNode.getAttrs());
+    delete data.image;
+    newImage.setAttrs(data);
+    cacheImgArr.push({ parentId: parent.id(), src, img: newImage });
+    parent?.add(newImage);
+  }
+  imageNode.setAttrs({ visible: false, runGif: false });
 };

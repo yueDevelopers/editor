@@ -20,13 +20,12 @@ export default async (stage: Konva.Stage) => {
             resolve(1);
           }
           const attrs = imageNode.getAttrs();
-
           if (attrs.src) {
             const newImage: Konva.Node | Event = await createImage(
               attrs.src,
               imageNode.getLayer()
             );
-            imageNode.remove();
+            imageNode.destroy();
             newImage.setAttrs(attrs);
             parent.add(newImage);
           }

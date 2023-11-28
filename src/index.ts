@@ -346,11 +346,12 @@ class INLEDITOR {
   }
   // 修改设备状态
   async setThingState(iu: string, setStateVal: string | number, src?: string) {
-    const thingBox = this.thingLayer.findOne(`#${iu}`);
-    const image = (thingBox as Konva.Group)?.findOne(
-      ".thingImage"
-    ) as Konva.Image;
-    const { state } = getCustomAttrs(thingBox);
+    const thingGroup = this.thingLayer.findOne(`#${iu}`);
+
+    const image = thingGroup.children.find(
+      (ele) => ele.name() === "thingImage" && ele.attrs.visible !== false
+    );
+    const { state } = getCustomAttrs(thingGroup);
     if (state === setStateVal) return;
     if (image.getClassName() !== "Image") {
       // 组件处理

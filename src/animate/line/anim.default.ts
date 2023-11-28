@@ -38,10 +38,10 @@ export default function (this: LineAnimate) {
     dash: dash || [15, 8, 15, 8],
   });
   const distance = getTotalDistance(this.opt.line.points());
-  const init = (i) => {
+  const init = () => {
     animate = new Konva.Tween({
       node: this.animateEl,
-      dashOffset: (i += sign * distance),
+      dashOffset: sign * distance,
       duration: (this.speed * distance) / 500,
       onFinish: () => {
         if (this.runState) {
@@ -56,9 +56,10 @@ export default function (this: LineAnimate) {
     this.animateEl.moveToTop();
     this.runState = true;
     if (animate) {
+      animate.reset();
       animate.play();
     } else {
-      init(0);
+      init();
     }
   };
   this.stop = () => {
