@@ -127,6 +127,11 @@ export const keyup = (e, ie) => {
       });
       ie.thingLayer.add(clone);
       ie.storage[index] = clone;
+      if (clone.name() === "selfText") {
+        clone.on("transform", (e) => {
+          clone.setAttrs({ width: clone.width() * clone.scaleX(), scaleX: 1 });
+        });
+      }
       toSelectOne(ie, clone);
       ie.saveHistory();
     });
