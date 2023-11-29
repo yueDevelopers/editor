@@ -53,6 +53,7 @@ import {
 } from "./util/initStage/reset/resetOneToOne";
 import { undoReset } from "./util/history";
 import { addGroup } from "./util/element/group";
+import { setMaintainState, setSignToTop } from "./util/preview/maintain";
 
 export type DrawState =
   | "Line"
@@ -133,6 +134,9 @@ class INLEDITOR {
       await reset(this);
       this.stage.attrs.drawState = "default";
     }
+    // setTimeout(() => {
+    //   this.previewMaintain("6157196857876306", true, 5);
+    // }, 3000);
   }
   keyUp = (e) => {
     keyup(e, this);
@@ -293,6 +297,10 @@ class INLEDITOR {
     resetLine(this);
     changeTheme(this, themeType, cb);
   }
+  // 预览挂牌
+  previewMaintain(id: string, maintain: boolean, amount: number) {
+    setMaintainState(this, id, maintain, amount);
+  }
 
   // 动态修改物模型的值
   setVal(iu: string, propertyId: string, val: string, color?: string) {
@@ -361,6 +369,7 @@ class INLEDITOR {
       cData.state = setStateVal;
       image ? await changeThingImage(image, src, this.thingLayer) : null;
     }
+    setSignToTop(thingGroup);
   }
 
   // 注册组件

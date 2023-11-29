@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="90.7069091px" height="59.7069091px" viewBox="0 0 90.7069091 59.7069091" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 3备份</title>
+    <defs>
+        <rect id="path-1" x="2.27667984" y="8.54750169" width="73.9920949" height="29.2055866" rx="2.82763636"></rect>
+        <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="73.9920949" height="29.2055866" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="数字孪生" transform="translate(-1759.2931, -619)">
+            <g id="编组-3备份" transform="translate(1760, 619)">
+                <g id="编组备份-2">
+                    <polyline id="路径-2" stroke="#F2F3F8" stroke-width="1.41381818" points="9.52066116 19.4751061 39.3325754 5.52514354 67.0491186 19.4751061"></polyline>
+                    <g id="编组-2备份" transform="translate(0, 19.4751)">
+                        <rect id="矩形" stroke="#FF9214" stroke-width="1.41381818" fill-opacity="0.655378" fill="#FF9214" x="0" y="5.64641342" width="78.5454545" height="33.8784805" rx="2.82763636"></rect>
+                        <use id="矩形" stroke="#FFFFFF" mask="url(#mask-2)" stroke-width="2.82763636" stroke-dasharray="2.827636" xlink:href="#path-1"></use>
+                        <path d="M14.210825,3.52900838 C14.210825,1.57999087 12.6169904,0 10.6508957,0 C8.68480105,0 7.09096642,1.57999087 7.09096642,3.52900838" id="路径" stroke="#FF9214" stroke-width="2.82763636"></path>
+                        <path d="M71.7392825,3.52900838 C71.7392825,1.57999087 70.1454478,0 68.1793532,0 C66.2132585,0 64.6194239,1.57999087 64.6194239,3.52900838" id="路径备份" stroke="#FF9214" stroke-width="2.82763636"></path>
+                        <text id="检修中" font-family="PingFangSC-Semibold, PingFang SC" font-size="16.9658182" font-weight="500" line-spacing="22.6210909" fill="#FFFFFF">
+                            <tspan x="14.538843" y="29.273935">检修中</tspan>
+                        </text>
+                    </g>
+                    <path d="M39.1996755,3.53454545 C39.5478212,3.53454545 39.8665454,3.66633287 40.0959125,3.89038324 C40.2949252,4.08478293 40.4254607,4.35126854 40.4254607,4.64998752 C40.4254607,4.94870649 40.2949252,5.21519211 40.0959125,5.4095918 C39.8665454,5.63364217 39.5478212,5.76542958 39.1996755,5.76542958 C38.8515299,5.76542958 38.5328056,5.63364217 38.3034386,5.4095918 C38.1044258,5.21519211 37.9738904,4.94870649 37.9738904,4.64998752 C37.9738904,4.35126854 38.1044258,4.08478293 38.3034386,3.89038324 C38.5328056,3.66633287 38.8515299,3.53454545 39.1996755,3.53454545 Z" id="椭圆形" stroke="#A4AABF" stroke-width="7.06909091" fill="#F2F3F8"></path>
+                </g>
+                <g id="编组-4" transform="translate(63.8182, 19.6667)" fill="#FFFFFF" stroke="#FF9214" stroke-width="1.63636364">
+                    <ellipse id="椭圆形" cx="13.0909091" cy="13.1111111" rx="12.2727273" ry="12.2929293"></ellipse>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
