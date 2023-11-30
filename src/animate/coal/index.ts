@@ -33,7 +33,6 @@ class COALANIM {
   }
   async init(autoPlay, uuid, imgUrl) {
     await this.reset(uuid, imgUrl);
-
     if (autoPlay) {
       this.start();
     }

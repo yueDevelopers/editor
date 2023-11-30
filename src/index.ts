@@ -134,9 +134,7 @@ class INLEDITOR {
       await reset(this);
       this.stage.attrs.drawState = "default";
     }
-    // setTimeout(() => {
-    //   this.previewMaintain("6157196857876306", true, 5);
-    // }, 3000);
+    console.log("init");
   }
   keyUp = (e) => {
     keyup(e, this);
@@ -352,6 +350,8 @@ class INLEDITOR {
     const { state } = getCustomAttrs(thingBox);
     return state;
   }
+
+  cacheImgArr: { parentId: string; src: string; img: Konva.Node }[] = [];
   // 修改设备状态
   async setThingState(iu: string, setStateVal: string | number, src?: string) {
     const thingGroup = this.thingLayer.findOne(`#${iu}`);
@@ -367,7 +367,7 @@ class INLEDITOR {
     } else {
       const cData = getCustomAttrs(image.parent);
       cData.state = setStateVal;
-      image ? await changeThingImage(image, src, this.thingLayer) : null;
+      image ? await changeThingImage(image, src, this) : null;
     }
     setSignToTop(thingGroup);
   }

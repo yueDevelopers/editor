@@ -4,8 +4,8 @@ import Konva from "konva";
 import _ from "lodash";
 import { UUID } from "src/util/uuid";
 import "../assets/gifler.js";
+import INLEDITOR from "@/index.js";
 
-const cacheImgArr: any[] = [];
 // const cacheImgList: Record<string, Konva.Image> = {};
 export const createImage: (
   img: string,
@@ -101,21 +101,21 @@ export const changeThingComponentState = (
 export const changeThingImage = async (
   imageNode: Konva.Image,
   src: string,
-  layer: Konva.Layer
+  ie: INLEDITOR
 ) => {
   const parent = imageNode.parent;
-  const old = cacheImgArr.find(
+  const old = ie.cacheImgArr.find(
     (ele) => ele.parentId === parent.id() && ele.src === src
   );
   if (old) {
     old.img.setAttrs({ visible: true, runGif: true });
   } else {
-    const newImage = await createImage(src, layer);
+    const newImage = await createImage(src, ie.thingLayer);
     newImage.getAttrs().image.src = src;
     const data = _.cloneDeep(imageNode.getAttrs());
     delete data.image;
     newImage.setAttrs(data);
-    cacheImgArr.push({ parentId: parent.id(), src, img: newImage });
+    ie.cacheImgArr.push({ parentId: parent.id(), src, img: newImage });
     parent?.add(newImage);
   }
   imageNode.setAttrs({ visible: false, runGif: false });
