@@ -223,12 +223,12 @@ const selectEvent = (ie: INLEDITOR, e: KonvaEventObject<any>) => {
     Transformers.nodes(nodes);
     // getNodeSize(node);
   }
-  // const res: Konva.Node[] = Transformers?.getNodes();
-  // if (res.length > 1) {
-  //   ie.opt.onSelectCb("group", { target: res });
-  // } else {
-  //   ie.opt.onSelectCb(res[0].name(), { target: res[0] });
-  // }
+  const res: Konva.Node[] = Transformers?.getNodes();
+  if (res.length > 1) {
+    ie.opt.onSelectCb("group", { target: res });
+  } else {
+    ie.opt.onSelectCb(res[0].name(), { target: res[0] });
+  }
 };
 
 export default (ie: INLEDITOR) => {

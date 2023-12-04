@@ -360,6 +360,7 @@ class INLEDITOR {
       (ele) => ele.name() === "thingImage" && ele.attrs.visible !== false
     );
     const { state } = getCustomAttrs(thingGroup);
+
     if (state === setStateVal) return;
     if (image.getClassName() !== "Image") {
       // 组件处理

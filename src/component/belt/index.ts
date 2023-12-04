@@ -51,7 +51,8 @@ class BELT {
       setCustomAttrs(this.group, {
         scale: this.config.width / this.config.defaultWidth,
       });
-      this.draw.event();
+      this.group.children.forEach((ele) => ele.destroy());
+      this.draw.init();
     } else {
       this.group = new Konva.Group({
         width: this.config.width,
@@ -142,6 +143,7 @@ class BELT {
         height: this.config.height - 6,
         cornerRadius: [10, 10, 20, 20],
         stroke: "black",
+        name: "brect1",
         strokeWidth: 0.5,
         draggable: false,
       });
@@ -164,6 +166,7 @@ class BELT {
         height: this.config.height - 12,
         cornerRadius: [6, 6, 13, 13],
         stroke: theme.rect3.border,
+        name: "brect2",
         strokeWidth: 1,
       });
 
@@ -173,6 +176,7 @@ class BELT {
         radius: 5,
         fill: theme.round.bj[0],
         draggable: false,
+        name: "circle",
       });
       this.circle1 = new Konva.Circle({
         x: this.config.width - 13,
@@ -180,6 +184,7 @@ class BELT {
         radius: 5,
         fill: theme.round.bj[0],
         draggable: false,
+        name: "circle1",
       });
       this.group.add(
         this.brect,
@@ -203,15 +208,13 @@ export const changeBeltState = (
   const thingLayer = layer(stage, "thing");
   const thingGroup = thingLayer.findOne(`#${iu}`) as Konva.Group;
   const thingImage = thingGroup.findOne(`.thingImage`) as Konva.Group;
-  const block = thingImage.findOne(".block");
-  const thingIrect = block.getAttrs();
-  const width = thingIrect.width;
-  const height = thingIrect.height;
   const theme = state[stateType];
-  thingImage.removeChildren();
-  const brect = new Konva.Rect({
-    fillLinearGradientStartPoint: { x: 0, y: 0 },
-    fillLinearGradientEndPoint: { x: 0, y: height },
+  const brect = thingImage.findOne(".block");
+  const brect1 = thingImage.findOne(".brect1");
+  const brect2 = thingImage.findOne(".brect2");
+  const circle = thingImage.findOne(".circle");
+  const circle1 = thingImage.findOne(".circle1");
+  brect.setAttrs({
     fillLinearGradientColorStops: [
       0,
       theme.rect1.bj[0],
@@ -220,31 +223,12 @@ export const changeBeltState = (
       1,
       theme.rect1.bj[2],
     ],
-    width: width,
-    height: height,
-    cornerRadius: [13, 13, 26, 26],
-    stroke: "black",
-    name: "block",
-    strokeWidth: 0.5,
   });
-
-  const brect1 = new Konva.Rect({
-    x: 3,
-    y: 3,
+  brect1.setAttrs({
     fill: theme.rect2.bj[0],
-    width: width - 6,
-    height: height - 6,
-    cornerRadius: [10, 10, 20, 20],
-    stroke: "black",
-    strokeWidth: 0.5,
-    draggable: false,
   });
-
-  const brect2 = new Konva.Rect({
-    x: 6,
-    y: 6,
-    fillLinearGradientStartPoint: { x: 6, y: 6 },
-    fillLinearGradientEndPoint: { x: 6, y: height - 6 },
+  brect2.setAttrs({
+    stroke: theme.rect3.border,
     fillLinearGradientColorStops: [
       0,
       theme.rect3.bj[0],
@@ -253,30 +237,15 @@ export const changeBeltState = (
       1,
       theme.rect3.bj[2],
     ],
-    draggable: false,
-    width: width - 12,
-    height: height - 12,
-    cornerRadius: [6, 6, 13, 13],
-    stroke: theme.rect3.border,
-    strokeWidth: 1,
   });
-
-  const circle = new Konva.Circle({
-    x: 13,
-    y: 12.5,
-    radius: 5,
+  circle.setAttrs({
     fill: theme.round.bj[0],
-    draggable: false,
   });
-  const circle1 = new Konva.Circle({
-    x: width - 13,
-    y: 12.5,
-    radius: 5,
+  circle1.setAttrs({
     fill: theme.round.bj[0],
-    draggable: false,
   });
-  setCustomAttrs(thingGroup, { state: stateType });
-  thingImage.add(brect, brect1, brect2, circle, circle1);
+  const info = getCustomAttrs(thingGroup);
+  info.state = stateType;
   return thingImage;
 };
 
