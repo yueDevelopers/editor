@@ -11,13 +11,11 @@ export * from "./scraper";
 export * from "./storeHouse";
 export * from "./technique";
 
-export const isComponentChild = (node: Konva.Node) => {
+export const getComponentGroup = (node: Konva.Node) => {
   const parent = node.parent;
   const parentName = parent.name();
 
-  return {
-    node: parentName === "thingImage" ? parent : node,
-  };
+  return parentName === "thingImage" ? parent.parent : undefined;
 };
 
 export const isComponentChildren = (node: Konva.Node) => {

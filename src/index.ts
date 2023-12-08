@@ -52,7 +52,7 @@ import {
   resetOneToImage,
 } from "./util/initStage/reset/resetOneToOne";
 import { undoReset } from "./util/history";
-import { addGroup } from "./util/element/group";
+import { addGroup } from "./util/element/groups";
 import { setMaintainState, setSignToTop } from "./util/preview/maintain";
 
 export type DrawState =
@@ -64,7 +64,7 @@ export type DrawState =
   | "Rect"
   | "Text"
   | "img"
-  | "dragStage"
+  | "drag"
   | "fieldSelect"
   | "default";
 
@@ -135,6 +135,10 @@ class INLEDITOR {
       this.stage.attrs.drawState = "default";
     }
     console.log("init");
+    // setTimeout(() => {
+    //   debugger;
+    //   addGroup(this);
+    // }, 5000);
   }
   keyUp = (e) => {
     keyup(e, this);
@@ -226,7 +230,10 @@ class INLEDITOR {
   setDrawState(state: DrawState, info?: { type: string; url: string }) {
     this.drawState = state;
     this.drawInfo = info;
-    exitEditLine(this.stage);
+    if (state !== "drag") {
+      exitEditLine(this.stage);
+    }
+
     switch (state) {
       case "rightAngleLine":
       case "rightAngleDottedLine":
@@ -392,8 +399,10 @@ class INLEDITOR {
     resetEvent(this.stage);
     clearGrid(this.stage);
     const json = this.stage.toJSON();
+    const image = this.toImage();
     addGrid(this);
-    return { mapJson: json, image: this.toImage() };
+    console.log(this.toImage().length);
+    return { mapJson: json, image };
   }
   deleteAllPoint() {
     this.stage.find("Circle").forEach((point) => {

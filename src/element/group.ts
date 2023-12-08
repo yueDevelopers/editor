@@ -45,12 +45,6 @@ export const getThingGroups: (parent: Parent) => Array<Konva.Group> = (
 ) => {
   return parent.find(`.${groupNames.thingGroup}`);
 };
-export const getThingGroup: (parent: Parent, iu: string) => Konva.Group = (
-  parent,
-  iu
-) => {
-  return parent.findOne(`#${iu}`);
-};
 
 // 创建thingtext 的组
 export const createThingTextGroup = (

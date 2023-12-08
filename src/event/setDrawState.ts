@@ -85,11 +85,6 @@ export default (ie: INLEDITOR, cb?: () => void) => {
     const stage = ie.getStage();
     const drawState = ie.getDrawState();
     const { x, y } = computedXYByEvent(stage, e.evt);
-    // if (drawState === "dragStage") return;
-    // console.log(111);
-    // stage.setAttrs({
-    //   draggable: false,
-    // });
 
     switch (drawState) {
       case "img":

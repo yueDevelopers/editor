@@ -2,6 +2,18 @@ import Konva from "konva";
 import { isEqual, uniqWith } from "lodash";
 import { getCustomAttrs, getLineInfo } from "./customAttr";
 
+// 获取参数B在此继承线的孩子
+export const getAncestorSon = (child: Konva.Node, parent: Konva.Node) => {
+  if (!child.parent) {
+    return false;
+  }
+  if (child.parent === parent) {
+    return child;
+  } else {
+    return getAncestorSon(child.parent, parent);
+  }
+};
+
 const findParents = (pid: string, stage) => {
   const arr = [];
   const node = stage.findOne("#" + pid);

@@ -40,7 +40,6 @@ export const keydown = (e, ie) => {
     });
     turnDrag(stage, false);
     ie.getStage().setAttrs({ draggable: true });
-    // ie.setDrawState("dragStage");
   }
 };
 export const keyup = (e, ie) => {

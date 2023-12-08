@@ -4,8 +4,7 @@ import { Shape, ShapeConfig } from "konva/lib/Shape";
 import { Stage } from "konva/lib/Stage";
 import INLEDITOR from "@/index";
 import { IRect } from "konva/lib/types";
-import { isComponentChild } from "@/component";
-import { getCustomAttrs } from "@/main";
+import { getCustomAttrs, getThingImage } from "@/main";
 import layer from "@/util/layer";
 import { getParentThingGroup } from "@/util/element";
 import { groupNames } from "@/element";
@@ -14,42 +13,9 @@ import thing from "@/data/thing";
 import { UUID } from "@/util/uuid";
 import { getNodeSize } from "@/util/element/size";
 import { getChooseGroup, getGroupNodes } from "@/util/element/group";
-
-// 获取需要 框选的元素们
-const getSelectNode = (selectTarget: Shape<ShapeConfig> | Stage) => {
-  let resNode;
-  if (
-    selectTarget.getParent().name() === groupNames.thingTextGroup ||
-    selectTarget.getParent().name() === groupNames.thingInputGroup ||
-    selectTarget.getParent().name() === groupNames.thingSwitchGroup ||
-    selectTarget.getParent().name() === groupNames.thingButtonGroup
-  ) {
-    resNode = selectTarget.getParent();
-  } else {
-    // ???
-    resNode = isComponentChild(selectTarget).node;
-  }
-
-  // if (resNode.name() === "thingImage") {
-  //   resNode = resNode.parent;
-  // }
-  return resNode;
-};
-
-/**
- * 判断当前元素类型
- */
-type TargetType = "line" | "other" | "thing";
-const checkTarget: (selectTarget: Shape<ShapeConfig> | Stage) => TargetType = (
-  e
-) => {
-  let type: TargetType = "other";
-  if (e.className === "Arrow") return "line";
-  return type;
-};
-
-// 如果是线条 去做什么事儿
-const isLine = () => {};
+import { getAncestorGroup } from "@/util/element/groups";
+import { getSelectNode } from "@/util/element/chooseAnything";
+import { getAncestorSon } from "@/util/getRelations";
 
 // 初始化选择框
 export const createTran = (node: Konva.Node, ie: INLEDITOR) => {
@@ -166,85 +132,138 @@ export const toSelect = (ie: INLEDITOR, nodes: Array<Konva.Node>, cb?) => {
   );
   return Transformers;
 };
-
-// 选中单个元素动作
-const selectEvent = (ie: INLEDITOR, e: KonvaEventObject<any>) => {
+// 上次选择的组
+let lastGroup;
+// 如果不是拖动选择的子组
+let nextGroup;
+export const chooseAnything = (target: Konva.Node, ie: INLEDITOR) => {
   const stage = ie.getStage();
   let Transformers = stage.findOne("Transformer") as Konva.Transformer;
-  const node = getSelectNode(e.target);
+  const { node: localThingGroup, type } = getSelectNode(target);
   const nodes: Array<Konva.Node> = [];
   const cursors = stage.find(".cursor");
   cursors.forEach((ele) => {
     inputText.blur(ele.parent);
   });
-  // shift选中组,暂未去重
-  if (e.evt.shiftKey && Transformers) {
-    const currentNodes = Transformers?.getNodes() || [];
-    const res = [...currentNodes, node].map((node) =>
-      getParentThingGroup(node)
-    );
-    Transformers.nodes(res);
-    Transformers.draw();
-  } else if (e.evt.ctrlKey && Transformers) {
-    if (node.name() !== "field") {
-      node.setAttrs({ draggable: true });
-    } else {
-      node.setAttrs({ draggable: true });
-      setTimeout(() => {
-        node.setAttrs({ draggable: false });
-      }, 3000);
-    }
-    const currentNodes = Transformers?.getNodes();
-    if (currentNodes.length === 1) {
-      currentNodes[0].setAttrs({ draggable: true });
-    }
-    Transformers.nodes([...currentNodes, node]);
-    Transformers.draw();
+  const currentNodes = Transformers?.getNodes() || [];
+  let newGroup;
+  const localAncestorGroup = getAncestorGroup(localThingGroup);
+  // 文字或者非设备图层
+  if (type === "text" || localAncestorGroup.parent.name() !== "thing") {
+    nodes.push(localThingGroup);
   } else {
-    // 没有按住shift
-    const choosedGroupId = getChooseGroup(ie);
-    resetEvent(stage);
-
-    nodes.push(node);
-    // 如果选中的是组元素
-    if (node.attrs.groupId) {
-      if (choosedGroupId !== node.attrs.groupId) {
-        nodes.length = 0;
-        nodes.push(...getGroupNodes(ie, node.attrs.groupId));
+    // 不在组内的元素
+    if (localAncestorGroup === localThingGroup) {
+      nodes.push(localThingGroup);
+      if (
+        localAncestorGroup.name() === "thingGroup" &&
+        currentNodes.length === 1 &&
+        currentNodes[0] === localThingGroup
+      ) {
+        nextGroup = {
+          type: "thingImage",
+          node: getThingImage(localThingGroup),
+        };
       }
-    }
-    if (ie.opt.isPreview && node.name() === groupNames.thingInputGroup) {
-      inputText.focus(node);
-      return;
-    }
+    } else {
+      // 组内元素
+      debugger;
+      const lastSon = getAncestorSon(localThingGroup, lastGroup);
 
-    Transformers = createTran(node, ie);
+      // 同源组最小节点
+      if (lastGroup === localThingGroup) {
+        if (localThingGroup.name() === "thingGroup") {
+          nodes.push(...currentNodes);
+          nextGroup = {
+            type: "thingImage",
+            node: getThingImage(localThingGroup),
+          };
+        } else {
+          nodes.push(...currentNodes);
+          nextGroup = { type: "group", node: localAncestorGroup };
+        }
+      }
+      // 同源组
+      else if (lastSon) {
+        nodes.push(...currentNodes);
+        nextGroup = { type: "group", node: lastSon };
+      } else {
+        // 第一次选或选中不同源的组
+        newGroup = localAncestorGroup;
+        nodes.push(...localAncestorGroup.children);
+      }
+
+      // 选中同组，轮到最小thingGroup
+      //   if (lastGroup?.name() === "thingGroup" && lastGroup === localThingGroup) {
+      //     newGroup = getThingImage(localThingGroup);
+      //     nodes.push(newGroup);
+      //   } else if (lastSon && lastGroup.name() !== "thingImage") {
+      //     // 选中同组，轮到子组
+      //     newGroup = lastSon;
+      //     nodes.push(...lastSon.children);
+      //   } else {
+      //     // 选中其他组或同组最小单位普通元素
+      //     newGroup = localAncestorGroup;
+      //     nodes.push(...localAncestorGroup.children);
+      //   }
+    }
+  }
+
+  if (!Transformers) {
+    Transformers = createTran(localThingGroup, ie);
     layer(stage, "util").add(Transformers);
     Transformers.nodes(nodes);
-    // getNodeSize(node);
-  }
-  const res: Konva.Node[] = Transformers?.getNodes();
-  if (res.length > 1) {
-    ie.opt.onSelectCb("group", { target: res });
-  } else {
-    ie.opt.onSelectCb(res[0].name(), { target: res[0] });
+    lastGroup = newGroup;
   }
 };
 
 export default (ie: INLEDITOR) => {
   const stage = ie.getStage();
-  // 整体逻辑：如果点击画布直接清掉选择，如果是其他重置或者增加选择
-  stage.on("click tap", (e) => {
+  let begin;
+  stage.on("mouseup", (e: any) => {
+    let Transformers = stage.findOne("Transformer") as Konva.Transformer;
+    // 点击 非拖动
+    if (
+      nextGroup &&
+      e.evt.layerX === begin.layerX &&
+      e.evt.layerY === begin.layerY
+    ) {
+      if (nextGroup.type === "thingImage") {
+        Transformers.nodes([nextGroup.node]);
+      } else {
+        Transformers.nodes(nextGroup.node.children);
+      }
+
+      lastGroup = nextGroup.node;
+    }
+    nextGroup = undefined;
+    const res: Konva.Node[] = Transformers?.getNodes();
+    // if (res.length > 1) {
+    //   ie.opt.onSelectCb("group", { target: res });
+    // } else {
+    //   ie.opt.onSelectCb(res[0].name(), { target: res[0] });
+    // }
+  });
+  // mouse down先选组，mouse up时候如果还是当前，先不拖动就选词组。
+  stage.on("mousedown tap", (e) => {
+    console.log("mousedown");
+    begin = e.evt;
+    if (e.target.attrs.state === "drag") {
+      return;
+    }
     // 预览选择输入框
     if (
       ie.opt.isPreview &&
       e.target.getParent().name() !== groupNames.thingInputGroup
     ) {
       resetEvent(stage);
+      if (e.target.name() === groupNames.thingInputGroup) {
+        inputText.focus(e.target);
+      }
       return;
     }
     const layer = e.target.getLayer();
-    // 判断一下当元素类型
+    // 判断一下当元素类型 网格 连线控制点 框选 不处理
     if (
       e.target.name() === "grid" ||
       getCustomAttrs(e.target).type === "control" ||
@@ -252,18 +271,11 @@ export default (ie: INLEDITOR) => {
     )
       return;
 
-    // const layer = stage.findOne(`.selectionBox`);
+    // 如果点的画布外
     if (!layer) {
       resetEvent(stage);
       return;
     }
-    const tt = checkTarget(e.target);
-    switch (tt) {
-      // case "line":
-      //   isLine();
-      //   break;
-      default:
-        selectEvent(ie, e);
-    }
+    chooseAnything(e.target, ie);
   });
 };

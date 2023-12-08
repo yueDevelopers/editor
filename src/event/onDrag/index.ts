@@ -12,6 +12,8 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
   stage.on("dragstart", (e: any) => {
     const transformer: Konva.Transformer = stage.findOne("Transformer");
     const nodes = transformer?.getNodes();
+
+    // 线随动
     if (nodes?.length > 1) {
       nodes.forEach((group: Konva.Group) => {
         if (group.name() === "thingGroup") {
@@ -62,7 +64,7 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
           }
         });
       } else {
-        const have = nodes.find((ele) => target.parent.id() === ele.id());
+        const have = nodes.find((ele) => target?.parent.id() === ele.id());
         if (have) {
           return;
         }
@@ -71,18 +73,21 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
     if (target) {
       dealRelation(target, ie.getStage());
     }
+    // 取消选中没了
 
-    if (e.target !== stage && e.target.getClassName() !== "Transformer") {
-      const { nodes } = getTran(stage);
-      if (nodes.length === 1 && nodes[0] !== e.target) {
-        clearTransFormer(stage);
-      }
-    }
+    // if (e.target !== stage && e.target.getClassName() !== "Transformer") {
+    //   const { nodes } = getTran(stage);
+    //   if (nodes.length === 1 && nodes[0] !== e.target) {
+    //     clearTransFormer(stage);
+    //   }
+    // }
 
     cb ? cb(e.target) : null;
   });
   // 结束拖动
   stage.on("dragend", (e: any) => {
+    console.log("dragend");
+    e.target.attrs.state = undefined;
     // 网格吸附
     let target;
     if (e.target.name() === "thingGroup" && ie.opt.adsorbent) {

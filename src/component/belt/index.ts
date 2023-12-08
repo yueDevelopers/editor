@@ -51,7 +51,7 @@ class BELT {
       setCustomAttrs(this.group, {
         scale: this.config.width / this.config.defaultWidth,
       });
-      this.group.children.forEach((ele) => ele.destroy());
+      this.group.children?.forEach((ele) => ele.destroy());
       this.draw.init();
     } else {
       this.group = new Konva.Group({
