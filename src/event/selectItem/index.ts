@@ -167,12 +167,14 @@ export const chooseAnything = (target: Konva.Node, ie: INLEDITOR) => {
       }
     } else {
       // 组内元素
-      debugger;
       const lastSon = getAncestorSon(localThingGroup, lastGroup);
 
       // 同源组最小节点
-      if (lastGroup === localThingGroup) {
-        if (localThingGroup.name() === "thingGroup") {
+      if (lastGroup === localThingGroup || lastGroup?.name() === "thingImage") {
+        if (
+          localThingGroup.name() === "thingGroup" &&
+          lastGroup.name() !== "thingImage"
+        ) {
           nodes.push(...currentNodes);
           nextGroup = {
             type: "thingImage",
@@ -238,11 +240,11 @@ export default (ie: INLEDITOR) => {
     }
     nextGroup = undefined;
     const res: Konva.Node[] = Transformers?.getNodes();
-    // if (res.length > 1) {
-    //   ie.opt.onSelectCb("group", { target: res });
-    // } else {
-    //   ie.opt.onSelectCb(res[0].name(), { target: res[0] });
-    // }
+    if (res.length > 1) {
+      ie.opt.onSelectCb("group", { target: res });
+    } else {
+      ie.opt.onSelectCb(res[0].name(), { target: res[0] });
+    }
   });
   // mouse down先选组，mouse up时候如果还是当前，先不拖动就选词组。
   stage.on("mousedown tap", (e) => {
