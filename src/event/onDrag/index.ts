@@ -1,7 +1,6 @@
 import INLEDITOR from "../..";
 import { closeSubLine, initSubLine } from "./subline";
 import { dealRelation } from "../../util/element/relation";
-import { clearTransFormer, getTran } from "../selectItem";
 import { getCustomAttrs } from "@/main";
 import Konva from "konva";
 import layer from "@/util/layer";

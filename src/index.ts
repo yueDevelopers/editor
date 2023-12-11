@@ -27,9 +27,7 @@ import stageTofit from "./util/stageTofit";
 import toImage from "./util/toImage";
 import animate from "./animate/line";
 import disableMove from "./util/initStage/disableMove";
-import { updateLineColor } from "./util/line/line";
 import { Thing } from "./data/thing";
-import { resetEvent } from "./event/selectItem";
 import { exitEditLine } from "./util/line/editLine";
 import reset from "./util/initStage/reset";
 import { showAnchor } from "./util/anchor";
@@ -54,6 +52,7 @@ import {
 import { undoReset } from "./util/history";
 import { addGroup } from "./util/element/groups";
 import { setMaintainState, setSignToTop } from "./util/preview/maintain";
+import { resetEvent } from "./util/element/choose";
 
 export type DrawState =
   | "Line"

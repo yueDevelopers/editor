@@ -1,7 +1,7 @@
 import Konva from "konva";
 import INLEDITOR from "..";
 import { exitEditLine } from "./line/editLine";
-import { clearTransFormer } from "@/event/selectItem";
+import { clearTransFormer } from "./element/choose";
 
 export const undoReset = async (ie: INLEDITOR) => {
   await ie.init(ie.historyArr[ie.historyArr.length - 1]);

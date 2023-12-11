@@ -1,5 +1,5 @@
 import Konva from "konva";
-import { getTran } from "../../event/selectItem";
+import { getTran } from "../element/choose";
 
 export type AlignType =
   | "moveToTop"

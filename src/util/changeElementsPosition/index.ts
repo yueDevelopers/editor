@@ -1,10 +1,10 @@
 import Konva from "konva";
-import { getTran } from "../../event/selectItem";
 import { getImgNode } from "../element/getImgNode";
 import { dealRelation } from "../element/relation";
 import { AlignOpt, AlignType } from "./index.b";
 import { getCustomAttrs, setCustomAttrs } from "../customAttr";
 import INLEDITOR from "@/index";
+import { getTran } from "../element/choose";
 
 export { AlignType };
 

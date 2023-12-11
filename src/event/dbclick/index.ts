@@ -2,8 +2,8 @@ import Konva from "konva";
 import INLEDITOR from "@/index";
 import layer from "@/util/layer";
 import { enterEditLine } from "@/util/line/editLine";
-import { clearTransFormer } from "../selectItem";
 import { editorText } from "@/element/text";
+import { clearTransFormer } from "@/util/element/choose";
 
 export default (ie: INLEDITOR) => {
   const stage = ie.getStage();

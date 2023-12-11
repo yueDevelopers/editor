@@ -17,11 +17,11 @@ import {
 } from "../util/line/editLine";
 import { Theme } from "../config/theme";
 import { createEditableText } from "../element/text";
-import { getTran, toSelect } from "./selectItem";
 import { getInclude } from "@/util/element/getInclude";
 import customAddImage from "./ondrop/customAddImage";
 import { showAnchor } from "@/util/anchor";
 import { isComponentChildren } from "@/main";
+import { toSelect } from "@/util/element/choose";
 
 const offSelection = (stage: Konva.Stage) => {
   // 移除mosemove 监听

@@ -6,9 +6,9 @@ import remove from "./remove";
 import { groupNames } from "@/element";
 import inputText from "@/element/texts/inputText";
 import { UUID } from "@/util/uuid";
-import selectItem, { toSelectOne } from "../selectItem";
 import { dealRelation } from "@/util/element/relation";
 import { turnDrag } from "@/util/line/rect";
+import { toSelectOne } from "@/util/element/choose";
 
 export const keydown = (e, ie) => {
   const stage = ie.getStage();

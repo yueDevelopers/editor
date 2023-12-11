@@ -3,11 +3,11 @@ import { createComponentThingGoup } from "@/element";
 import { getCustomAttrs, setCustomAttrs } from "@/util/customAttr";
 import layer from "../../util/layer";
 import Konva from "konva";
-import { getTran } from "@/event/selectItem";
 import { UUID } from "@/util/uuid";
 import scraperLeft from "../../assets/scraperLeft.svg";
 import scraperRight from "../../assets/scraperRight.svg";
 import { createAnchors } from "@/util/anchor";
+import { getTran } from "@/util/element/choose";
 
 interface Technique {
   stage: Konva.Stage;
