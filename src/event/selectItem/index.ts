@@ -5,9 +5,13 @@ import layer from "@/util/layer";
 import { groupNames } from "@/element";
 import inputText from "@/element/texts/inputText";
 import { getAncestorGroup } from "@/util/element/groups";
-import { getSelectNode } from "@/util/element/chooseAnything";
+import {
+  getSelectEle,
+  getSelectNode,
+  whetherIncloudInArr,
+} from "@/util/element/chooseAnything";
 import { getAncestorSon } from "@/util/getRelations";
-import { resetEvent } from "@/util/element/choose";
+import { createTran, resetEvent } from "@/util/element/choose";
 
 // 上次选择的组
 let lastGroup;
@@ -25,61 +29,74 @@ export const chooseAnything = (target: Konva.Node, ie: INLEDITOR) => {
   const currentNodes = Transformers?.getNodes() || [];
   let newGroup;
   const localAncestorGroup = getAncestorGroup(localThingGroup);
-  // 文字或者非设备图层
-  if (type === "text" || localAncestorGroup.parent.name() !== "thing") {
-    nodes.push(localThingGroup);
-  } else {
-    // 不在组内的元素
-    if (localAncestorGroup === localThingGroup) {
+  // 是否在当前已选内
+  const have = whetherIncloudInArr(localThingGroup, currentNodes);
+  if (currentNodes.length <= 1) {
+    // 文字或者非设备图层
+    if (type === "text" || localAncestorGroup.parent.name() !== "thing") {
       nodes.push(localThingGroup);
-      if (
-        localAncestorGroup.name() === "thingGroup" &&
-        currentNodes.length === 1 &&
-        currentNodes[0] === localThingGroup
-      ) {
-        nextGroup = {
-          type: "thingImage",
-          node: getThingImage(localThingGroup),
-        };
-      }
     } else {
-      // 组内元素
-      const lastSon = getAncestorSon(localThingGroup, lastGroup);
-
-      // 同源组最小节点
-      if (lastGroup === localThingGroup || lastGroup?.name() === "thingImage") {
+      // 不在组内的元素
+      if (localAncestorGroup === localThingGroup) {
+        nodes.push(localThingGroup);
         if (
-          localThingGroup.name() === "thingGroup" &&
-          lastGroup.name() !== "thingImage"
+          localAncestorGroup.name() === "thingGroup" &&
+          currentNodes.length === 1 &&
+          currentNodes[0] === localThingGroup
         ) {
-          nodes.push(...currentNodes);
           nextGroup = {
             type: "thingImage",
             node: getThingImage(localThingGroup),
           };
-        } else {
-          nodes.push(...currentNodes);
-          nextGroup = { type: "group", node: localAncestorGroup };
         }
-      }
-      // 同源组
-      else if (lastSon) {
-        nodes.push(...currentNodes);
-        nextGroup = { type: "group", node: lastSon };
       } else {
-        // 第一次选或选中不同源的组
-        newGroup = localAncestorGroup;
-        nodes.push(...localAncestorGroup.children);
+        // 组内元素
+        const lastSon = getAncestorSon(localThingGroup, lastGroup);
+
+        // 同源组最小节点
+        if (
+          lastGroup === localThingGroup ||
+          lastGroup?.name() === "thingImage"
+        ) {
+          if (
+            localThingGroup.name() === "thingGroup" &&
+            lastGroup.name() !== "thingImage"
+          ) {
+            nodes.push(...currentNodes);
+            nextGroup = {
+              type: "thingImage",
+              node: getThingImage(localThingGroup),
+            };
+          } else {
+            nodes.push(...currentNodes);
+            nextGroup = { type: "group", node: localAncestorGroup };
+          }
+        }
+        // 同源组
+        else if (lastSon) {
+          nodes.push(...currentNodes);
+          nextGroup = { type: "group", node: lastSon };
+        } else {
+          // 第一次选或选中不同源的组
+          newGroup = localAncestorGroup;
+          nodes.push(...localAncestorGroup.children);
+        }
       }
     }
   }
 
+  // 当前无选中
   if (!Transformers) {
     Transformers = createTran(localThingGroup, ie);
     layer(stage, "util").add(Transformers);
+    lastGroup = newGroup;
+    Transformers.nodes(nodes);
   }
-  lastGroup = newGroup;
-  Transformers.nodes(nodes);
+  // 选中了新的
+  else if (!have) {
+    lastGroup = newGroup;
+    Transformers.nodes(nodes);
+  }
 };
 export const chooseSomething = (target: Konva.Node, ie: INLEDITOR) => {};
 export default (ie: INLEDITOR) => {
@@ -113,11 +130,8 @@ export default (ie: INLEDITOR) => {
   });
   // mouse down先选组，mouse up时候如果还是当前，没拖动就选子组。
   stage.on("mousedown tap", (e) => {
-    console.log("mousedown");
+    console.log(e.target);
     begin = e.evt;
-    if (e.target.attrs.state === "drag") {
-      return;
-    }
     // 预览选择输入框
     if (
       ie.opt.isPreview &&
@@ -137,17 +151,20 @@ export default (ie: INLEDITOR) => {
       stage.attrs.drawState === "fieldSelect"
     )
       return;
-
     // 如果点的画布外
     if (!layer) {
       resetEvent(stage);
+      ie.opt.onSelectCb("stage", { target: e.target });
       return;
     }
+
     let Transformers = stage.findOne("Transformer") as Konva.Transformer;
-    if (e.evt.ctrlKey && Transformers) {
-      11;
+    const currentNodes = Transformers?.getNodes() || [];
+    if ((e.evt.ctrlKey || e.evt.metaKey) && Transformers) {
+      Transformers.nodes([...currentNodes, getSelectEle(e.target).node]);
     } else if (e.evt.shiftKey && Transformers) {
-      chooseSomething(e.target, ie);
+      const node = getAncestorGroup(e.target);
+      Transformers.nodes([...currentNodes, node]);
     } else {
       chooseAnything(e.target, ie);
     }

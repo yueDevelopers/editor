@@ -14,7 +14,7 @@ export const createImage: (
   if (!img || img === "null") {
     img = "/micro-assets/platform-web/close.png";
   }
-  console.log("新图片");
+  console.log("加载新图片");
   // if (cacheImgList[img]) {
   //   const image = cacheImgList[img].clone();
   //   image.setId(UUID());
@@ -96,6 +96,7 @@ export const changeThingComponentState = (
     // belt.render(state as number);
     changeState(stage, state, thing.iu);
   }
+  stage.batchDraw();
 };
 
 export const changeThingImage = async (

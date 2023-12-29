@@ -204,6 +204,8 @@ class INLEDITOR {
       height,
       width,
     });
+    clearGrid(this.stage);
+    addGrid(this);
   }
 
   protected container: HTMLDivElement;
@@ -400,7 +402,6 @@ class INLEDITOR {
     const json = this.stage.toJSON();
     const image = this.toImage();
     addGrid(this);
-    console.log(this.toImage().length);
     return { mapJson: json, image };
   }
   deleteAllPoint() {

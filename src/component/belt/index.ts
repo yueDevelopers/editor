@@ -16,8 +16,8 @@ interface BELT {
   brect: Konva.Rect;
   brect1: Konva.Rect;
   brect2: Konva.Rect;
-  circle: Konva.Circle;
-  circle1: Konva.Circle;
+  beltCircle1: Konva.Circle;
+  beltCircle2: Konva.Circle;
 }
 
 class BELT {
@@ -170,28 +170,28 @@ class BELT {
         strokeWidth: 1,
       });
 
-      this.circle = new Konva.Circle({
+      this.beltCircle1 = new Konva.Circle({
         x: 13,
         y: 12.5,
         radius: 5,
         fill: theme.round.bj[0],
         draggable: false,
-        name: "circle",
+        name: "beltCircle1",
       });
-      this.circle1 = new Konva.Circle({
+      this.beltCircle2 = new Konva.Circle({
         x: this.config.width - 13,
         y: 12.5,
         radius: 5,
         fill: theme.round.bj[0],
         draggable: false,
-        name: "circle1",
+        name: "beltCircle2",
       });
       this.group.add(
         this.brect,
         this.brect1,
         this.brect2,
-        this.circle,
-        this.circle1
+        this.beltCircle1,
+        this.beltCircle2
       );
 
       setCustomAttrs(this.thingGroup, { state: this.config.theme });
@@ -212,8 +212,8 @@ export const changeBeltState = (
   const brect = thingImage.findOne(".block");
   const brect1 = thingImage.findOne(".brect1");
   const brect2 = thingImage.findOne(".brect2");
-  const circle = thingImage.findOne(".circle");
-  const circle1 = thingImage.findOne(".circle1");
+  const beltCircle1 = thingImage.findOne(".beltCircle1");
+  const beltCircle2 = thingImage.findOne(".beltCircle2");
   brect.setAttrs({
     fillLinearGradientColorStops: [
       0,
@@ -238,10 +238,10 @@ export const changeBeltState = (
       theme.rect3.bj[2],
     ],
   });
-  circle.setAttrs({
+  beltCircle1.setAttrs({
     fill: theme.round.bj[0],
   });
-  circle1.setAttrs({
+  beltCircle2.setAttrs({
     fill: theme.round.bj[0],
   });
   const info = getCustomAttrs(thingGroup);

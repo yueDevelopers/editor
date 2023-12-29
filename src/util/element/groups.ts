@@ -10,17 +10,6 @@ export const getAncestorGroup = (node: Konva.Node) => {
   }
 };
 
-// export const getChooseGroup = (node: INLEDITOR) => {
-//   const stage = ie.getStage();
-
-//   return gid;
-// };
-export const getGroupNodes = (ie: INLEDITOR, groupId: string) => {
-  return ie.thingLayer.children.filter((ele: Konva.Node) => {
-    return ele.attrs.groupId === groupId;
-  });
-};
-
 export const addGroup = (ie: INLEDITOR) => {
   const stage = ie.getStage();
   const Transformers = stage.findOne("Transformer") as Konva.Transformer;
@@ -43,9 +32,9 @@ export const addGroup = (ie: INLEDITOR) => {
 export const delGroup = (ie: INLEDITOR) => {
   const stage = ie.getStage();
   const Transformers = stage.findOne("Transformer") as Konva.Transformer;
+  const group = Transformers.getNodes()[0].parent;
   Transformers?.nodes().forEach((node: Konva.Group) => {
-    if (node.name() === "thingGroup" || node.name() === "selfShape") {
-      node.attrs.groupId = undefined;
-    }
+    ie.thingLayer.add(node);
   });
+  group.destroy();
 };

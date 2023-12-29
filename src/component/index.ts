@@ -18,6 +18,13 @@ export const getComponentGroup = (node: Konva.Node) => {
   return parentName === "thingImage" ? parent.parent : undefined;
 };
 
+export const getComponentImage = (node: Konva.Node) => {
+  const parent = node.parent;
+  const parentName = parent.name();
+
+  return parentName === "thingImage" ? parent : undefined;
+};
+
 export const isComponentChildren = (node: Konva.Node) => {
   return node?.parent?.parent?.name() === "thingGroup";
 };

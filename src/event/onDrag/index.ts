@@ -85,7 +85,6 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
   });
   // 结束拖动
   stage.on("dragend", (e: any) => {
-    console.log("dragend");
     e.target.attrs.state = undefined;
     // 网格吸附
     let target;
