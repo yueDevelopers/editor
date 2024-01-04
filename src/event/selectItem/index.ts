@@ -17,6 +17,7 @@ import { createTran, resetEvent } from "@/util/element/choose";
 let lastGroup;
 // 如果不是拖动选择的子组
 let nextGroup;
+let lastChooseMode;
 export const chooseAnything = (target: Konva.Node, ie: INLEDITOR) => {
   const stage = ie.getStage();
   let Transformers = stage.findOne("Transformer") as Konva.Transformer;
@@ -31,7 +32,7 @@ export const chooseAnything = (target: Konva.Node, ie: INLEDITOR) => {
   const localAncestorGroup = getAncestorGroup(localThingGroup);
   // 是否在当前已选内
   const have = whetherIncloudInArr(localThingGroup, currentNodes);
-  if (currentNodes.length <= 1) {
+  if (lastChooseMode !== "multi") {
     // 文字或者非设备图层
     if (type === "text" || localAncestorGroup.parent.name() !== "thing") {
       nodes.push(localThingGroup);
@@ -91,17 +92,20 @@ export const chooseAnything = (target: Konva.Node, ie: INLEDITOR) => {
     layer(stage, "util").add(Transformers);
     lastGroup = newGroup;
     Transformers.nodes(nodes);
+    lastChooseMode = "single";
   }
   // 选中了新的
   else if (!have) {
     lastGroup = newGroup;
     Transformers.nodes(nodes);
+    lastChooseMode = "single";
   }
 };
 export const chooseSomething = (target: Konva.Node, ie: INLEDITOR) => {};
 export default (ie: INLEDITOR) => {
   const stage = ie.getStage();
   let begin;
+
   stage.on("mouseup", (e: any) => {
     let Transformers = stage.findOne("Transformer") as Konva.Transformer;
     // 点击 非拖动
@@ -112,25 +116,28 @@ export default (ie: INLEDITOR) => {
     ) {
       if (nextGroup.type === "thingImage") {
         Transformers.nodes([nextGroup.node]);
+        lastChooseMode = "single";
       } else {
         Transformers.nodes(nextGroup.node.children);
+        lastChooseMode = "single";
       }
 
       lastGroup = nextGroup.node;
     }
     nextGroup = undefined;
     const res: Konva.Node[] = Transformers?.getNodes();
-    if (lastGroup && lastGroup.name() === "group") {
-      ie.opt.onSelectCb("group", { target: lastGroup });
-    } else if (res.length > 1) {
+    if (lastChooseMode === "multi") {
       ie.opt.onSelectCb("multi", { target: res });
-    } else {
+    } else if (lastGroup) {
+      ie.opt.onSelectCb(lastGroup.name(), { target: lastGroup });
+    } else if (res?.length === 1) {
       ie.opt.onSelectCb(res[0].name(), { target: res[0] });
+    } else {
+      ie.opt.onSelectCb(e.target.getClassName(), { target: e.target });
     }
   });
   // mouse down先选组，mouse up时候如果还是当前，没拖动就选子组。
   stage.on("mousedown tap", (e) => {
-    console.log(e.target);
     begin = e.evt;
     // 预览选择输入框
     if (
@@ -145,12 +152,18 @@ export default (ie: INLEDITOR) => {
     }
     const layer = e.target.getLayer();
     // 判断一下当元素类型 网格 连线控制点 框选 不处理
+    if (e.target.getClassName() === "Stage" || e.target.name() === "grid") {
+      resetEvent(ie.getStage());
+      lastChooseMode = undefined;
+      lastGroup = undefined;
+      return;
+    }
     if (
-      e.target.name() === "grid" ||
       getCustomAttrs(e.target).type === "control" ||
       stage.attrs.drawState === "fieldSelect"
     )
       return;
+
     // 如果点的画布外
     if (!layer) {
       resetEvent(stage);
@@ -162,9 +175,11 @@ export default (ie: INLEDITOR) => {
     const currentNodes = Transformers?.getNodes() || [];
     if ((e.evt.ctrlKey || e.evt.metaKey) && Transformers) {
       Transformers.nodes([...currentNodes, getSelectEle(e.target).node]);
+      lastChooseMode = "multi";
     } else if (e.evt.shiftKey && Transformers) {
       const node = getAncestorGroup(e.target);
       Transformers.nodes([...currentNodes, node]);
+      lastChooseMode = "multi";
     } else {
       chooseAnything(e.target, ie);
     }

@@ -135,7 +135,6 @@ class INLEDITOR {
     }
     console.log("init");
     // setTimeout(() => {
-    //   debugger;
     //   addGroup(this);
     // }, 5000);
   }
@@ -273,11 +272,7 @@ class INLEDITOR {
   };
   // 创建thing文字
   createThingText = (iu: string, type?: "thing" | "line") => {
-    return createThingTexts(
-      this,
-      type === "thing" || type === undefined ? iu : type + iu,
-      this.theme
-    );
+    return createThingTexts(this, iu, this.theme);
   };
   setComponentScale = (iu: string, scale: number) => {
     const thingGroup: Konva.Group = this.stage.findOne("#" + iu);
