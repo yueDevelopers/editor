@@ -78,6 +78,13 @@ export const createImage: (
     }
   });
 };
+export const changeImgState = (thingImage: Konva.Node) => {
+  thingImage.cache();
+  thingImage.filters([Konva.Filters.RGB]);
+  thingImage.red(198);
+  thingImage.green(216);
+  thingImage.blue(174);
+};
 export const changeThingComponentState = (
   stage: Konva.Stage,
   node: Konva.Image,

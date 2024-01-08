@@ -42,8 +42,7 @@ class COALANIM {
   clipGroup;
 
   async reset(uuid: string, imgUrl: string) {
-    this.cacheCoal = await drawCoal(imgUrl);
-    // this.cacheCoal.cache();
+    this.cacheCoal = await drawCoal();
     const layerthing = layer(this.stage, "thing");
     this.animEl = (layerthing.findOne(`#${uuid}`) as Konva.Group).findOne(
       ".thingImage"
@@ -58,7 +57,6 @@ class COALANIM {
     const { width, height } = this.animEl.getClientRect();
     const point = this.animEl.getAbsolutePosition();
     const { x, y } = computedXY(this.stage, point.x, point.y);
-    // this.startX = x;
     const scale = this.stage.scaleX();
 
     this.animGroup = new Konva.Group({
@@ -113,37 +111,6 @@ class COALANIM {
   runState = false;
   tween; // 动画对象
 
-  setCoal() {
-    console.log(this.cacheCoal);
-
-    // const { width } = this.animEl.getClientRect();
-    // let imageObj = new Image();
-    // imageObj.onload = () => {
-    //   this.startX = (-1 * imageObj.width) / 2;
-    //   const img = new Konva.Image({
-    //     x: (-1 * imageObj.width) / 2,
-    //     y: 25 - imageObj.height,
-    //     image: imageObj,
-    //     name: "left",
-    //   });
-    //   img.setAttrs({ src: coalImg });
-    //   this.animGroup.add(img);
-    // };
-    // imageObj.src = coalImg;
-
-    // for (let i = width / -30 - 1; i <= width / 30 + 1; i++) {
-    //   const node = this.cacheCoal.clone() as Konva.Image;
-    //   node.setAttrs({
-    //     width: 30,
-    //     height: 14,
-    //   });
-    //   node.setAttrs({
-    //     x: 30 * i,
-    //     y: 25 - node.height(),
-    //   });
-    //   this.animGroup.add(node);
-    // }
-  }
   animInit() {
     const { width } = this.animEl.getClientRect();
     const scale = this.stage.scaleX();

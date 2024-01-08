@@ -53,6 +53,8 @@ import { undoReset } from "./util/history";
 import { addGroup } from "./util/element/groups";
 import { setMaintainState, setSignToTop } from "./util/preview/maintain";
 import { resetEvent } from "./util/element/choose";
+import { loadTemplate } from "./util/element/loadTemplate";
+import { addBtn } from "./util/element/addBtn";
 
 export type DrawState =
   | "Line"
@@ -134,10 +136,14 @@ class INLEDITOR {
       this.stage.attrs.drawState = "default";
     }
     console.log("init");
-    // setTimeout(() => {
-    //   addGroup(this);
-    // }, 5000);
+    setTimeout(() => {
+      // loadTemplate(this, json, { x: 100, y: 100 });
+      // addBtn(this, "6157196857876306");
+    }, 5000);
   }
+  addTemplate = (json, point) => {
+    loadTemplate(this, json, point);
+  };
   keyUp = (e) => {
     keyup(e, this);
   };

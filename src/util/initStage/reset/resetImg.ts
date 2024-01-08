@@ -2,7 +2,7 @@ import Konva from "konva";
 import { createImage } from "@/element/image";
 import { getCustomAttrs } from "@/main";
 
-export default async (stage: Konva.Stage) => {
+export default async (stage: Konva.Stage | Konva.Layer) => {
   const imgArr = stage.find("Image");
   await Promise.all(
     imgArr.map((imageNode, index) => {

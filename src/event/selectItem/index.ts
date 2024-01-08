@@ -2,7 +2,7 @@ import Konva from "konva";
 import INLEDITOR from "@/index";
 import { getCustomAttrs, getThingImage } from "@/main";
 import layer from "@/util/layer";
-import { groupNames } from "@/element";
+import { changeImgState, groupNames } from "@/element";
 import inputText from "@/element/texts/inputText";
 import { getAncestorGroup } from "@/util/element/groups";
 import {
@@ -183,5 +183,6 @@ export default (ie: INLEDITOR) => {
     } else {
       chooseAnything(e.target, ie);
     }
+    // changeImgState(e.target);
   });
 };
