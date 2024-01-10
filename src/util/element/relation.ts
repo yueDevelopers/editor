@@ -81,7 +81,7 @@ export const dealRelation = (
     const points = getUsePoint(line.attrs.points);
     if (lineInfo.type.toLowerCase().indexOf("rightangle") !== -1) {
       if (nodes) {
-        const to = nodes.find((ele: Konva.Node) => ele.id() === lineInfo.to);
+        const to = nodes.find((ele: Konva.Node) => ele.id() === lineInfo.from);
         if (to) {
           points.forEach((ele, index) => {
             ele.x += distanceChange.x;

@@ -2,6 +2,16 @@ import Konva from "konva";
 import { UUID } from "../uuid";
 import INLEDITOR from "@/index";
 
+export const getTreeNodes=(group:Konva.Group)=>{
+  return group.children.map((node:Konva.Node)=>{
+    if(node.name()==="group"){
+      getTreeNodes(node as Konva.Group)
+    }else{
+      return node
+    }
+  })
+}
+
 export const getAncestorGroup = (node: Konva.Node) => {
   if (node.parent.getClassName() === "Layer") {
     return node;
@@ -21,12 +31,15 @@ export const addGroup = (ie: INLEDITOR) => {
     if (
       node.name() === "thingGroup" ||
       node.name() === "selfShape" ||
-      node.name() === "group"
+      node.name() === "group"||
+      node.name() === "customImageGroup"||
+      node.name() === "selfText"
     ) {
       group.add(node);
     }
   });
   ie.thingLayer.add(group);
+  ie.opt.onSelectCb(group.name(), { target: group });
 };
 
 export const delGroup = (ie: INLEDITOR) => {
@@ -37,4 +50,5 @@ export const delGroup = (ie: INLEDITOR) => {
     ie.thingLayer.add(node);
   });
   group.destroy();
+  ie.opt.onSelectCb("multi", { target: Transformers?.nodes() });
 };

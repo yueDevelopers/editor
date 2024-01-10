@@ -2,6 +2,7 @@ import Konva from "konva";
 import INLEDITOR from "@/index";
 import { groupNames } from "@/element/group";
 import { getCustomAttrs } from "@/util/customAttr";
+import { getThingImage } from "@/main";
 
 export default (ie: INLEDITOR, e: KeyboardEvent) => {
   const Transformers = ie
@@ -44,6 +45,9 @@ export const removeRelevance = (obj: Konva.Node, stage: Konva.Stage) => {
     if (obj.parent?.name() === "thingGroup") {
       obj.parent?.remove();
     }
+  }
+  if(obj?.name() === "thingGroup"){
+    obj=getThingImage(obj as Konva.Group)
   }
   if (
     obj?.className === "Rect" ||
