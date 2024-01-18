@@ -11,7 +11,10 @@ export const addBtn = async (ie: INLEDITOR, id: string) => {
   const node: Konva.Group = stage.findOne("#" + id);
   const btn = await createImage(btnImg);
   const thingImage = getThingImage(node);
-  const point = thingImage.getAbsolutePosition();
+  const point =
+    thingImage.getClassName() === "Group"
+      ? { x: 0, y: 0 }
+      : thingImage.getAbsolutePosition();
   const { x, y } = computedXY(stage, point.x, point.y);
   btn.setAttrs({
     name: "addBtn",

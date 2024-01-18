@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="90px" height="90px" viewBox="0 0 90 90" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>二产品重介旋流器_2D_灰改色</title>
+    <defs>
+        <linearGradient x1="35.1875828%" y1="45.0554307%" x2="52.6882214%" y2="66.5878791%" id="linearGradient-1">
+            <stop stop-color="#969EA8" offset="0%"></stop>
+            <stop stop-color="#DBDEE4" offset="63.1349605%"></stop>
+            <stop stop-color="#B0B8C1" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="二产品重介旋流器_2D_灰改色" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="二产品重介旋流器_2D_灰">
+            <rect id="矩形" x="0" y="0" width="90" height="90"></rect>
+            <rect id="矩形" fill="#B0B9C4" fill-rule="nonzero" transform="translate(78.4704, 33.4946) rotate(-300) translate(-78.4704, -33.4946)" x="71.0604425" y="31.3995577" width="14.82" height="4.19"></rect>
+            <rect id="矩形-2" fill="#B0B9C4" fill-rule="nonzero" transform="translate(80.9684, 32.0812) rotate(-300) translate(-80.9684, -32.0812)" x="71.8434354" y="31.3062083" width="18.25" height="1.55"></rect>
+            <rect id="矩形-3" fill="#B0B9C4" fill-rule="nonzero" transform="translate(61.8746, 18.2097) rotate(-300) translate(-61.8746, -18.2097)" x="60.5495915" y="13.8147006" width="2.65" height="8.79"></rect>
+            <rect id="矩形-4" fill="#B0B9C4" fill-rule="nonzero" transform="translate(57.5696, 10.7532) rotate(-300) translate(-57.5696, -10.7532)" x="56.7945915" y="6.35822192" width="1.55" height="8.79"></rect>
+            <path d="M10.4688949,63.1428502 L18.8758949,77.7028502 L9.86789494,81.3814599 L2.77789494,69.1012196 L10.4688949,63.1428502 Z M24.5908949,52.2018502 L28.5250295,59.0165648 L30.6600295,62.7144933 L35.4148949,70.9498502 L20.8468949,76.8978502 L12.1518949,61.8388502 L24.5908949,52.2018502 Z M50.8068949,31.8908502 L66.1198949,58.4128502 L37.3768949,70.1488502 L26.2658949,50.9038502 L50.8068949,31.8908502 Z M60.221724,24.5968502 L77.146724,53.9118101 L68.0818949,57.6118502 L52.4828949,30.5918502 L60.221724,24.5968502 Z" id="形状结合" fill="url(#linearGradient-1)"></path>
+            <polygon id="路径" fill="#B0B9C4" transform="translate(74.6496, 56.0867) rotate(-300) translate(-74.6496, -56.0867)" points="73.9346414 52.8467362 79.6746414 59.3267362 69.6246414 59.3267362"></polygon>
+            <polygon id="矩形-5" fill="#B0B9C4" transform="translate(71.8752, 58.7913) rotate(-300) translate(-71.8752, -58.7913)" points="78.3452161 58.2762905 78.3452161 59.3062905 65.4052161 59.3062905 65.4052161 58.2762905"></polygon>
+            <polygon id="路径-2" fill="#B0B9C4" transform="translate(57.1562, 25.5873) rotate(-300) translate(-57.1562, -25.5873)" points="57.871244 22.447283 52.131244 28.727283 62.181244 28.727283"></polygon>
+            <polygon id="矩形-6" fill="#B0B9C4" transform="translate(53.4709, 26.5141) rotate(-300) translate(-53.4709, -26.5141)" points="59.8259211 25.9991166 59.8259211 27.0291166 47.1159211 27.0291166 47.1159211 25.9991166"></polygon>
+        </g>
+    </g>
+</svg>

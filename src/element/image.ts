@@ -5,6 +5,7 @@ import _ from "lodash";
 import { UUID } from "src/util/uuid";
 import "../assets/gifler.js";
 import INLEDITOR from "@/index.js";
+import testImg from "../assets/greyTest.svg";
 
 // const cacheImgList: Record<string, Konva.Image> = {};
 export const createImage: (
@@ -78,12 +79,25 @@ export const createImage: (
     }
   });
 };
-export const changeImgState = (thingImage: Konva.Node) => {
-  thingImage.cache();
-  thingImage.filters([Konva.Filters.RGB]);
-  thingImage.red(198);
-  thingImage.green(216);
-  thingImage.blue(174);
+export const changeImgState = async (thingImage: Konva.Node) => {
+  const img = await createImage(testImg);
+  img.setAttrs({
+    id: UUID(),
+    x: thingImage.x(),
+    y: thingImage.y(),
+  });
+  img.cache();
+  img.filters([Konva.Filters.Contrast, Konva.Filters.RGB]);
+
+  // img.red(234);
+  // img.green(88);
+  // img.blue(88);
+  img.red(34);
+  img.green(204);
+  img.blue(131);
+  img.contrast(20);
+  thingImage.parent.add(img);
+  img.moveToTop();
 };
 export const changeThingComponentState = (
   stage: Konva.Stage,

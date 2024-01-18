@@ -1,7 +1,7 @@
 import INLEDITOR from "@/index";
 import dropThingImage from "./dropThingImage";
 import customAddImage from "./customAddImage";
-import computedXY from "@/util/computedXY";
+import computedXY, { computedXYByEvent } from "@/util/computedXY";
 
 export default (
   ie: INLEDITOR,
@@ -26,6 +26,7 @@ export default (
     // 自定义组件拦截+回调
     const isCustomComponent = e.dataTransfer?.getData("customComponent");
     const data = e.dataTransfer?.getData("thing");
+    const template = e.dataTransfer?.getData("template");
     if (isCustomComponent) {
       const { x, y } = computedXY(ie.getStage(), e.offsetX, e.offsetY);
       ie.opt.onDropCb
@@ -33,10 +34,14 @@ export default (
         : null;
       return;
     }
-    if (e.dataTransfer.files.length > 0 && !data) {
+    if (template) {
+      // 模板
+      ie.addTemplate(JSON.parse(template).style, computedXYByEvent(stage, e));
+    } else if (e.dataTransfer.files.length > 0 && !data) {
       customAddImage(stage, e);
-    } else {
+    } else if (data) {
       dropThingImage(stage, ie.getTheme(), e, ie.opt.onDropCb);
+    } else {
     }
 
     callback ? callback(e) : null;

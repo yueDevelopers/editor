@@ -138,7 +138,7 @@ class INLEDITOR {
     console.log("init");
     setTimeout(() => {
       // loadTemplate(this, json, { x: 100, y: 100 });
-      // addBtn(this, "6157196857876306");
+      // addBtn(this, "6157196859740463");
     }, 5000);
   }
   addTemplate = (json, point) => {

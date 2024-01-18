@@ -177,11 +177,11 @@ export default (ie: INLEDITOR) => {
       Transformers.nodes([...currentNodes, getSelectEle(e.target).node]);
       lastChooseMode = "multi";
     } else if (e.evt.shiftKey && Transformers) {
-      const arr=currentNodes.map((node:Konva.Node)=>{
-        return getAncestorGroup(node)
-      })
+      const arr = currentNodes.map((node: Konva.Node) => {
+        return getAncestorGroup(node);
+      });
       //数组去重
-      const newArr = Array.from(new Set(arr))
+      const newArr = Array.from(new Set(arr));
       const node = getAncestorGroup(e.target);
       Transformers.nodes([...newArr, node]);
       lastChooseMode = "multi";
