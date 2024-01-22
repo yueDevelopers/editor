@@ -2,6 +2,7 @@ import Konva from "konva";
 import reset from "../initStage/reset";
 import resetImg, { loadImage } from "../initStage/reset/resetImg";
 import { resetComponent } from "../initStage/reset/resetComponents";
+import { addBtn } from "./addBtn";
 
 export const loadTemplate = async (ie, json, point) => {
   const tempThingJson = json.children.find(
@@ -39,6 +40,11 @@ export const loadTemplate = async (ie, json, point) => {
   const lineLay = ie
     .getStage()
     .children.find((layer) => layer.name() === "line");
+
+  const thingArr = [];
+  tempThingLay.find(".thingGroup").forEach((node) => {
+    thingArr.push(node.id());
+  });
   const ImageArr = [];
   const tempThingLayChildren = [...tempThingLay.children];
   for (let i = 0; i < tempThingLayChildren.length; i++) {
@@ -47,11 +53,19 @@ export const loadTemplate = async (ie, json, point) => {
       x: node.x() - min.x + point.x,
       y: node.y() - min.y + point.y,
     });
-    ImageArr.push(...node.find("Image"));
+    console.log(node.getAbsolutePosition());
+    if (node.getClassName() === "Group") {
+      ImageArr.push(...node.find("Image"));
+    }
+
     ie.thingLayer.add(node);
     resetComponent(ie, node);
   }
+  // debugger;
   await resetImg(ImageArr);
+  thingArr.forEach((id) => {
+    addBtn(ie, id);
+  });
   tempLineLay.children.forEach((node) => {
     node.setAbsolutePosition({
       x: node.x() - min.x + point.x,

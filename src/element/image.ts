@@ -92,9 +92,12 @@ export const changeImgState = async (thingImage: Konva.Node) => {
   // img.red(234);
   // img.green(88);
   // img.blue(88);
-  img.red(34);
-  img.green(204);
-  img.blue(131);
+  // img.red(34);
+  // img.green(204);
+  // img.blue(131);
+  img.red(62);
+  img.green(126);
+  img.blue(255);
   img.contrast(20);
   thingImage.parent.add(img);
   img.moveToTop();

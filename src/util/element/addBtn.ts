@@ -14,13 +14,18 @@ export const addBtn = async (ie: INLEDITOR, id: string) => {
   const point =
     thingImage.getClassName() === "Group"
       ? { x: 0, y: 0 }
-      : thingImage.getAbsolutePosition();
-  const { x, y } = computedXY(stage, point.x, point.y);
+      : { x: thingImage.x(), y: thingImage.y() };
   btn.setAttrs({
     name: "addBtn",
     id: UUID(),
-    x: x + thingImage.width() / 2 - btn.width() / 2,
-    y: y + thingImage.height() / 2 - btn.height() / 2,
+    x:
+      point.x +
+      (thingImage.width() * thingImage.scaleX()) / 2 -
+      btn.width() / 2,
+    y:
+      point.y +
+      (thingImage.height() * thingImage.scaleY()) / 2 -
+      btn.height() / 2,
   });
   node.add(btn);
 };
