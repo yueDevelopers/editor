@@ -2,15 +2,15 @@ import Konva from "konva";
 import { UUID } from "../uuid";
 import INLEDITOR from "@/index";
 
-export const getTreeNodes=(group:Konva.Group)=>{
-  return group.children.map((node:Konva.Node)=>{
-    if(node.name()==="group"){
-      getTreeNodes(node as Konva.Group)
-    }else{
-      return node
+export const getTreeNodes = (group: Konva.Group) => {
+  return group.children.map((node: Konva.Node) => {
+    if (node.name() === "group") {
+      getTreeNodes(node as Konva.Group);
+    } else {
+      return node;
     }
-  })
-}
+  });
+};
 
 export const getAncestorGroup = (node: Konva.Node) => {
   if (node.parent.getClassName() === "Layer") {
@@ -31,8 +31,8 @@ export const addGroup = (ie: INLEDITOR) => {
     if (
       node.name() === "thingGroup" ||
       node.name() === "selfShape" ||
-      node.name() === "group"||
-      node.name() === "customImageGroup"||
+      node.name() === "group" ||
+      node.name() === "customImageGroup" ||
       node.name() === "selfText"
     ) {
       group.add(node);
@@ -46,9 +46,14 @@ export const delGroup = (ie: INLEDITOR) => {
   const stage = ie.getStage();
   const Transformers = stage.findOne("Transformer") as Konva.Transformer;
   const group = Transformers.getNodes()[0].parent;
-  Transformers?.nodes().forEach((node: Konva.Group) => {
+  const oldArr = [];
+  Transformers?.nodes().forEach((node: Konva.Group, index: number) => {
+    oldArr.push(node.getAbsolutePosition());
     ie.thingLayer.add(node);
   });
   group.destroy();
+  Transformers?.nodes().forEach((node: Konva.Group, index: number) => {
+    node.setAbsolutePosition(oldArr[index]);
+  });
   ie.opt.onSelectCb("multi", { target: Transformers?.nodes() });
 };
