@@ -142,6 +142,7 @@ class Scraper {
           width: 31,
           height: 26,
           name: "left",
+          id: UUID(),
         });
         img.setAttrs({ src: scraperLeft });
         this.group.add(img);
@@ -157,6 +158,7 @@ class Scraper {
           width: 42,
           height: 26,
           name: "right",
+          id: UUID(),
         });
         img.setAttrs({ src: scraperRight });
         this.group.add(img);
@@ -173,6 +175,7 @@ class Scraper {
         stroke: "black",
         strokeWidth: 0.5,
         draggable: false,
+        id: UUID(),
       });
       this.group.add(this.rect);
       setCustomAttrs(this.thingGroup, { state: this.config.theme });

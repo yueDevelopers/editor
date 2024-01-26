@@ -3,13 +3,15 @@ import { UUID } from "../uuid";
 import INLEDITOR from "@/index";
 
 export const getTreeNodes = (group: Konva.Group) => {
-  return group.children.map((node: Konva.Node) => {
+  const arr = [];
+  group.children.forEach((node: Konva.Node) => {
     if (node.name() === "group") {
-      getTreeNodes(node as Konva.Group);
+      arr.push(...getTreeNodes(node as Konva.Group));
     } else {
-      return node;
+      arr.push(node);
     }
   });
+  return arr;
 };
 
 export const getAncestorGroup = (node: Konva.Node) => {

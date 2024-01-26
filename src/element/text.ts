@@ -75,7 +75,7 @@ export const createEditableText = (
     draggable: true,
     editable: true,
     width: 200,
-    id:UUID(),
+    id: UUID(),
     x,
     y,
   });

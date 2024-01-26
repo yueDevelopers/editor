@@ -61,7 +61,6 @@ export const loadTemplate = async (ie, json, point) => {
     ie.thingLayer.add(node);
     resetComponent(ie, node);
   }
-  // debugger;
   await resetImg(ImageArr);
   thingArr.forEach((id) => {
     addBtn(ie, id);

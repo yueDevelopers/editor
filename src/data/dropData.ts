@@ -102,8 +102,7 @@ export const setThingChildPosition = (
       });
     } else {
       const xy = computedXY(stage, x, y);
-
-      g.setPosition({
+      g.setAbsolutePosition({
         x: i.position.x + xy.x,
         y: i.position.y + xy.y,
       });

@@ -31,60 +31,61 @@ export const chooseAnything = (target: Konva.Node, ie: INLEDITOR) => {
   let newGroup;
   const localAncestorGroup = getAncestorGroup(localThingGroup);
   // 是否在当前已选内
-  const have = whetherIncloudInArr(localThingGroup, currentNodes);
-  if (lastChooseMode !== "multi") {
-    // 文字或者非设备图层
-    if (type === "text" || localAncestorGroup.parent.name() !== "thing") {
+  let have = whetherIncloudInArr(
+    getThingImage(localThingGroup) || localThingGroup,
+    currentNodes
+  );
+  // 上次选择结果
+  // if (lastChooseMode !== "multi") { 为了多选拖动
+  // 文字或者非设备图层
+  if (type === "text" || localAncestorGroup.parent.name() !== "thing") {
+    nodes.push(localThingGroup);
+  } else {
+    // 不在组内的元素
+    if (localAncestorGroup === localThingGroup) {
       nodes.push(localThingGroup);
+      if (
+        localAncestorGroup.name() === "thingGroup" &&
+        currentNodes.length === 1 &&
+        currentNodes[0] === localThingGroup
+      ) {
+        nextGroup = {
+          type: "thingImage",
+          node: getThingImage(localThingGroup),
+        };
+      }
     } else {
-      // 不在组内的元素
-      if (localAncestorGroup === localThingGroup) {
-        nodes.push(localThingGroup);
+      // 组内元素
+      const lastSon = getAncestorSon(localThingGroup, lastGroup);
+
+      // 同源组最小节点
+      if (lastGroup === localThingGroup || lastGroup?.name() === "thingImage") {
         if (
-          localAncestorGroup.name() === "thingGroup" &&
-          currentNodes.length === 1 &&
-          currentNodes[0] === localThingGroup
+          localThingGroup.name() === "thingGroup" &&
+          lastGroup.name() !== "thingImage"
         ) {
+          nodes.push(...currentNodes);
           nextGroup = {
             type: "thingImage",
             node: getThingImage(localThingGroup),
           };
-        }
-      } else {
-        // 组内元素
-        const lastSon = getAncestorSon(localThingGroup, lastGroup);
-
-        // 同源组最小节点
-        if (
-          lastGroup === localThingGroup ||
-          lastGroup?.name() === "thingImage"
-        ) {
-          if (
-            localThingGroup.name() === "thingGroup" &&
-            lastGroup.name() !== "thingImage"
-          ) {
-            nodes.push(...currentNodes);
-            nextGroup = {
-              type: "thingImage",
-              node: getThingImage(localThingGroup),
-            };
-          } else {
-            nodes.push(...currentNodes);
-            nextGroup = { type: "group", node: localAncestorGroup };
-          }
-        }
-        // 同源组
-        else if (lastSon) {
-          nodes.push(...currentNodes);
-          nextGroup = { type: "group", node: lastSon };
         } else {
-          // 第一次选或选中不同源的组
-          newGroup = localAncestorGroup;
-          nodes.push(...localAncestorGroup.children);
+          nodes.push(...currentNodes);
+          nextGroup = { type: "group", node: localAncestorGroup };
         }
+      }
+      // 同源组
+      else if (lastSon) {
+        nodes.push(...currentNodes);
+        nextGroup = { type: "group", node: lastSon };
+      } else {
+        // 第一次选或选中不同源的组
+        newGroup = localAncestorGroup;
+        nodes.push(...localAncestorGroup.children);
       }
     }
   }
+  // }
 
   // 当前无选中
   if (!Transformers) {
@@ -105,15 +106,20 @@ export const chooseSomething = (target: Konva.Node, ie: INLEDITOR) => {};
 export default (ie: INLEDITOR) => {
   const stage = ie.getStage();
   let begin;
+  let state = "";
 
   stage.on("mouseup", (e: any) => {
     let Transformers = stage.findOne("Transformer") as Konva.Transformer;
+    const cbData: any = {
+      operation: "",
+    };
+    if (e.evt.layerX === begin.layerX && e.evt.layerY === begin.layerY) {
+      cbData.operation = "click";
+    } else {
+      cbData.operation = "drag";
+    }
     // 点击 非拖动
-    if (
-      nextGroup &&
-      e.evt.layerX === begin.layerX &&
-      e.evt.layerY === begin.layerY
-    ) {
+    if (nextGroup && cbData.operation === "click") {
       if (nextGroup.type === "thingImage") {
         Transformers.nodes([nextGroup.node]);
         lastChooseMode = "single";
@@ -125,34 +131,52 @@ export default (ie: INLEDITOR) => {
       lastGroup = nextGroup.node;
     }
     nextGroup = undefined;
+
     const res: Konva.Node[] = Transformers?.getNodes();
+    cbData.target = res;
+    let type = "";
     if (lastChooseMode === "multi") {
-      ie.opt.onSelectCb("multi", { target: res });
+      type = "multi";
     } else if (lastGroup) {
-      ie.opt.onSelectCb(lastGroup.name(), { target: lastGroup });
+      type = lastGroup.name();
+      cbData.target = lastGroup;
     } else if (res?.length === 1) {
-      ie.opt.onSelectCb(res[0].name(), { target: res[0] });
+      type = res[0].name();
+      cbData.target = res[0];
+    } else if (res?.length > 1) {
+      type = "multi";
     } else {
-      ie.opt.onSelectCb(e.target.getClassName(), { target: e.target });
+      type = e.target.getClassName();
+      cbData.target = e.target;
     }
+    if (state !== "line") {
+      ie.opt.onSelectCb(type, cbData);
+    }
+    state = "";
   });
   // mouse down先选组，mouse up时候如果还是当前，没拖动就选子组。
   stage.on("mousedown tap", (e) => {
     begin = e.evt;
+    if (ie.getDrawState().toLocaleLowerCase().indexOf("line") !== -1) {
+      state = "line";
+      return;
+    }
     // 预览选择输入框
-    if (
-      ie.opt.isPreview &&
-      e.target.getParent().name() !== groupNames.thingInputGroup
-    ) {
+    if (ie.opt.isPreview) {
       resetEvent(stage);
-      if (e.target.name() === groupNames.thingInputGroup) {
-        inputText.focus(e.target);
+      if (e.target.getParent().name() === groupNames.thingInputGroup) {
+        inputText.focus(e.target.getParent());
       }
+
       return;
     }
     const layer = e.target.getLayer();
     // 判断一下当元素类型 网格 连线控制点 框选 不处理
-    if (e.target.getClassName() === "Stage" || e.target.name() === "grid") {
+    if (
+      e.target.getClassName() === "Stage" ||
+      e.target.name() === "field" ||
+      e.target.name() === "grid"
+    ) {
       resetEvent(ie.getStage());
       lastChooseMode = undefined;
       lastGroup = undefined;
@@ -160,7 +184,8 @@ export default (ie: INLEDITOR) => {
     }
     if (
       getCustomAttrs(e.target).type === "control" ||
-      stage.attrs.drawState === "fieldSelect"
+      stage.attrs.drawState === "fieldSelect" ||
+      e.target.parent.getClassName() === "Transformer"
     )
       return;
 

@@ -1,7 +1,7 @@
 import INLEDITOR from "../..";
 import { closeSubLine, initSubLine } from "./subline";
 import { dealRelation } from "../../util/element/relation";
-import {  getCustomAttrs, getThingImage, getTreeNodes } from "@/main";
+import { getCustomAttrs, getThingImage, getTreeNodes } from "@/main";
 import Konva from "konva";
 import layer from "@/util/layer";
 
@@ -38,7 +38,6 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
     }
     // 块关联线随动
     let target;
-
     if (
       e.target.nodeType === "Shape" ||
       e.target.nodeType === "Image" ||
@@ -60,13 +59,14 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
             dealRelation(img, ie.getStage(), imgs);
           } else if (ele.name() === "thingImage") {
             dealRelation(ele, ie.getStage(), imgs);
-          }else if(ele.name() === "group"){
-            getTreeNodes(ele).forEach((node:Konva.Node)=>{
+          } else if (ele.name() === "group") {
+            const nodes = getTreeNodes(ele);
+            nodes.forEach((node: Konva.Node) => {
               if (node.name() === "thingGroup") {
-                const img =getThingImage(node as Konva.Group)
+                const img = getThingImage(node as Konva.Group);
                 dealRelation(img, ie.getStage(), imgs);
               }
-            })
+            });
           }
         });
       } else {
