@@ -11,7 +11,8 @@ import {
   whetherIncloudInArr,
 } from "@/util/element/chooseAnything";
 import { getAncestorSon } from "@/util/getRelations";
-import { createTran, resetEvent } from "@/util/element/choose";
+import { createTran, resetEvent, setTransferNode } from "@/util/element/choose";
+import { set } from "lodash";
 
 // 上次选择的组
 let lastGroup;
@@ -20,14 +21,14 @@ let nextGroup;
 let lastChooseMode;
 export const chooseAnything = (target: Konva.Node, ie: INLEDITOR) => {
   const stage = ie.getStage();
-  let Transformers = stage.findOne("Transformer") as Konva.Transformer;
+  let transformers = stage.findOne("Transformer") as Konva.Transformer;
   const { node: localThingGroup, type } = getSelectNode(target);
   const nodes: Array<Konva.Node> = [];
   const cursors = stage.find(".cursor");
   cursors.forEach((ele) => {
     inputText.blur(ele.parent);
   });
-  const currentNodes = Transformers?.getNodes() || [];
+  const currentNodes = transformers?.getNodes() || [];
   let newGroup;
   const localAncestorGroup = getAncestorGroup(localThingGroup);
   // 是否在当前已选内
@@ -88,17 +89,17 @@ export const chooseAnything = (target: Konva.Node, ie: INLEDITOR) => {
   // }
 
   // 当前无选中
-  if (!Transformers) {
-    Transformers = createTran(localThingGroup, ie);
-    layer(stage, "util").add(Transformers);
+  if (!transformers) {
+    transformers = createTran(localThingGroup, ie);
+    layer(stage, "util").add(transformers);
     lastGroup = newGroup;
-    Transformers.nodes(nodes);
+    transformers.nodes(nodes);
     lastChooseMode = "single";
   }
   // 选中了新的
   else if (!have) {
     lastGroup = newGroup;
-    Transformers.nodes(nodes);
+    setTransferNode(transformers, nodes);
     lastChooseMode = "single";
   }
 };
@@ -109,7 +110,7 @@ export default (ie: INLEDITOR) => {
   let state = "";
 
   stage.on("mouseup", (e: any) => {
-    let Transformers = stage.findOne("Transformer") as Konva.Transformer;
+    let transformers = stage.findOne("Transformer") as Konva.Transformer;
     const cbData: any = {
       operation: "",
     };
@@ -121,10 +122,10 @@ export default (ie: INLEDITOR) => {
     // 点击 非拖动
     if (nextGroup && cbData.operation === "click") {
       if (nextGroup.type === "thingImage") {
-        Transformers.nodes([nextGroup.node]);
+        setTransferNode(transformers, [nextGroup.node]);
         lastChooseMode = "single";
       } else {
-        Transformers.nodes(nextGroup.node.children);
+        setTransferNode(transformers, [nextGroup.node.children]);
         lastChooseMode = "single";
       }
 
@@ -132,7 +133,7 @@ export default (ie: INLEDITOR) => {
     }
     nextGroup = undefined;
 
-    const res: Konva.Node[] = Transformers?.getNodes();
+    const res: Konva.Node[] = transformers?.getNodes();
     cbData.target = res;
     let type = "";
     if (lastChooseMode === "multi") {

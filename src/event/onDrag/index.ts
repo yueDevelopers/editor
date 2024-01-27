@@ -11,7 +11,6 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
   stage.on("dragstart", (e: any) => {
     const transformer: Konva.Transformer = stage.findOne("Transformer");
     const nodes = transformer?.getNodes();
-
     // 线随动
     if (nodes?.length > 1) {
       nodes.forEach((group: Konva.Group) => {
