@@ -301,7 +301,9 @@ class INLEDITOR {
 
     const field: Konva.Node = this.getStage().find(".field")[0];
     field.setAttrs({ fill: FieldTheme[themeType].fill });
-    resetLine(this);
+    const lineLayer = layer(this.stage, "line");
+    const lineArr = [...lineLayer.find("Arrow"), ...lineLayer.find("Line")];
+    resetLine(this, lineArr);
     changeTheme(this, themeType, cb);
   }
   // 预览挂牌
