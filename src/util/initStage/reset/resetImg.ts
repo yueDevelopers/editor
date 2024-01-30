@@ -1,6 +1,7 @@
 import Konva from "konva";
 import { createImage } from "@/element/image";
 import { getCustomAttrs } from "@/main";
+import btnImg from "../../../assets/add.svg";
 
 export const loadImage = async (imageNode) => {
   if (
@@ -13,6 +14,7 @@ export const loadImage = async (imageNode) => {
       imageNode.attrs.src = getCustomAttrs(parent).thing.img;
     }
     const attrs = imageNode.getAttrs();
+
     if (attrs.src) {
       const newImage: Konva.Node | Event = await createImage(
         attrs.src,
@@ -32,7 +34,8 @@ export default async (imgArr: Konva.Node[]) => {
         if (
           imageNode.name() === "thingImage" ||
           imageNode.name() === "customImage" ||
-          imageNode.parent.attrs.componentName === "Scraper"
+          imageNode.parent.attrs.componentName === "Scraper" ||
+          imageNode.name() === "addBtn"
         ) {
           const parent = imageNode.getParent();
           if (imageNode.name() === "thingImage") {
@@ -42,7 +45,12 @@ export default async (imgArr: Konva.Node[]) => {
             resolve(1);
           }
           const attrs = imageNode.getAttrs();
-          if (attrs.src) {
+          if (imageNode.name() === "addBtn") {
+            const newImage: Konva.Node | Event = await createImage(btnImg);
+            imageNode.destroy();
+            newImage.setAttrs(attrs);
+            parent.add(newImage);
+          } else if (attrs.src) {
             const newImage: Konva.Node | Event = await createImage(
               attrs.src,
               imageNode.getLayer()

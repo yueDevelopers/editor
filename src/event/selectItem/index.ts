@@ -121,7 +121,7 @@ export default (ie: INLEDITOR) => {
     }
     // 点击 非拖动
     if (nextGroup && cbData.operation === "click") {
-      if (nextGroup.type === "thingImage") {
+      if (nextGroup.node.name() !== "group") {
         setTransferNode(transformers, [nextGroup.node]);
         lastChooseMode = "single";
       } else {
@@ -131,6 +131,7 @@ export default (ie: INLEDITOR) => {
 
       lastGroup = nextGroup.node;
     }
+
     nextGroup = undefined;
 
     const res: Konva.Node[] = transformers?.getNodes();

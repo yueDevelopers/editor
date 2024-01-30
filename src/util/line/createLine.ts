@@ -24,7 +24,7 @@ export const finishLine = (
 ) => {
   const stage = ie.getStage();
   // 设备
-  if (begin.className === "Image" && begin.parent?.nodeType === "Group") {
+  if (begin.name() === "thingImage" && begin.parent?.nodeType === "Group") {
     begin.parent?.setAttrs({ draggable: true });
     //组件
   }

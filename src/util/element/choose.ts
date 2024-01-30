@@ -80,6 +80,16 @@ export const getTranOpt = (nodes: Konva.Node[]) => {
     } else if (node?.name() === "selfText") {
       opt.enabledAnchors = ["middle-left", "middle-right"];
     } else if (node?.name() === "customImage" || node?.name() === "selfShape") {
+      opt.enabledAnchors = [
+        "top-left",
+        "top-center",
+        "top-right",
+        "middle-right",
+        "middle-left",
+        "bottom-left",
+        "bottom-center",
+        "bottom-right",
+      ];
     } else {
       opt.resizeEnabled = false;
     }
