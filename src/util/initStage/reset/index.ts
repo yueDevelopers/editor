@@ -4,6 +4,7 @@ import INLEDITOR from "../../../index";
 import { resetLine } from "@/util/line/border";
 import resetComponents from "./resetComponents";
 import layer from "@/util/layer";
+import { getCustomAttrs } from "@/main";
 
 export default async (ie: INLEDITOR) => {
   const stage = ie.getStage();
@@ -13,4 +14,10 @@ export default async (ie: INLEDITOR) => {
   resetLine(ie, lineArr);
   resetText(stage);
   resetComponents(ie);
+  stage.find(".thingGroup").forEach((group) => {
+    const data = getCustomAttrs(group);
+    if (data.lock) {
+      group.setAttrs({ draggable: false });
+    }
+  });
 };

@@ -9,15 +9,32 @@ import { UUID } from "../uuid";
 import { getCustomAttrs } from "../customAttr";
 import { getThingImage } from "..";
 
+// 递归拿到所有节点
+export const getTreeElesAndGroup = (group: Konva.Group) => {
+  const arr = [];
+  group.children.forEach((node: Konva.Node) => {
+    if (node.hasChildren()) {
+      arr.push(node);
+      arr.push(...getTreeElesAndGroup(node as Konva.Group));
+    } else {
+      arr.push(node);
+    }
+  });
+  return arr;
+};
+
 export const batchChangeId = async (tempThingLay, tempLineLay) => {
   const time = "-" + new Date().getTime();
-  tempThingLay.find(".thingGroup").forEach((node) => {
+  const nodes = getTreeElesAndGroup(tempThingLay);
+  nodes.forEach((node) => {
     node.setAttr("id", node.id() + time);
-    const thingImage = getThingImage(node);
-    thingImage.setAttr("id", thingImage.id() + time);
-    const data = getCustomAttrs(thingImage);
-    data.lineInfo.inLineIds = data.lineInfo.inLineIds.map((id) => id + time);
-    data.lineInfo.outLineIds = data.lineInfo.outLineIds.map((id) => id + time);
+    if (node.name() === "thingImage") {
+      const data = getCustomAttrs(node);
+      data.lineInfo.inLineIds = data.lineInfo.inLineIds.map((id) => id + time);
+      data.lineInfo.outLineIds = data.lineInfo.outLineIds.map(
+        (id) => id + time
+      );
+    }
   });
   tempLineLay.find(".line").forEach((node) => {
     node.setAttr("id", node.id() + time);

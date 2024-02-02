@@ -80,6 +80,7 @@ export const resetLine = (ie, lineArr: Konva.Node[]) => {
       line.destroy();
     } else {
       line.name("line");
+      line.setAttrs({ dash: [8] });
       if (line.parent.name() !== "thingGroup") {
         const group = createThingGroup({});
         group.setAttrs({ draggable: false });

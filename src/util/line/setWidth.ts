@@ -19,13 +19,13 @@ export const setLineWidth = (
     info.lineInfo.width = size;
     const proportion = size / 8;
     const dash = basicDash || [8];
-    coreLine.setAttrs({ dash: dash.map((ele) => ele * proportion) });
+    // coreLine.setAttrs({ dash: dash.map((ele) => ele * proportion) });
   } else {
     line.setAttrs({ strokeWidth: size });
     const proportion = size / 4;
-    if (basicDash) {
-      line.setAttrs({ dash: basicDash.map((ele) => ele * proportion) });
-    }
+    // if (basicDash) {
+    //   line.setAttrs({ dash: basicDash.map((ele) => ele * proportion) });
+    // }
   }
 };
 export const getLineWidth = (line: Konva.Node) => {

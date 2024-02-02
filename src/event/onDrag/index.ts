@@ -26,8 +26,7 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
       });
     }
   });
-  // 按下移动
-  stage.on("dragmove", (e: any) => {
+  const dragmove = (e: any) => {
     if (e.target.name() === "field") {
       return;
     }
@@ -74,8 +73,7 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
           return;
         }
       }
-    }
-    if (target) {
+    } else if (target) {
       dealRelation(target, ie.getStage());
     }
     // 取消选中没了
@@ -88,9 +86,10 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
     // }
 
     cb ? cb(e.target) : null;
-  });
-  // 结束拖动
-  stage.on("dragend", (e: any) => {
+  };
+
+  stage.on("dragmove", dragmove);
+  const dragend = (e: any) => {
     e.target.attrs.state = undefined;
     // 网格吸附
     let target;
@@ -128,5 +127,6 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
     }
     ie.saveHistory();
     imgs = [];
-  });
+  };
+  stage.on("dragend", dragend);
 };

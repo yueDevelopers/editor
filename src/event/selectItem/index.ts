@@ -13,6 +13,7 @@ import {
 import { getAncestorSon } from "@/util/getRelations";
 import { createTran, resetEvent, setTransferNode } from "@/util/element/choose";
 import { set } from "lodash";
+import { turnDrag } from "@/util/line/rect";
 
 // 上次选择的组
 let lastGroup;
@@ -37,7 +38,6 @@ export const chooseAnything = (target: Konva.Node, ie: INLEDITOR) => {
     currentNodes
   );
   // 上次选择结果
-  // if (lastChooseMode !== "multi") { 为了多选拖动
   // 文字或者非设备图层
   if (type === "text" || localAncestorGroup.parent.name() !== "thing") {
     nodes.push(localThingGroup);
@@ -81,19 +81,21 @@ export const chooseAnything = (target: Konva.Node, ie: INLEDITOR) => {
         nextGroup = { type: "group", node: lastSon };
       } else {
         // 第一次选或选中不同源的组
-        newGroup = localAncestorGroup;
+        if (localAncestorGroup.name() !== "customImageGroup") {
+          newGroup = localAncestorGroup;
+        }
+
         nodes.push(...localAncestorGroup.children);
       }
     }
   }
-  // }
 
   // 当前无选中
   if (!transformers) {
     transformers = createTran(localThingGroup, ie);
     layer(stage, "util").add(transformers);
     lastGroup = newGroup;
-    transformers.nodes(nodes);
+    setTransferNode(transformers, nodes);
     lastChooseMode = "single";
   }
   // 选中了新的
@@ -125,7 +127,7 @@ export default (ie: INLEDITOR) => {
         setTransferNode(transformers, [nextGroup.node]);
         lastChooseMode = "single";
       } else {
-        setTransferNode(transformers, [nextGroup.node.children]);
+        setTransferNode(transformers, [...nextGroup.node.children]);
         lastChooseMode = "single";
       }
 
@@ -215,6 +217,16 @@ export default (ie: INLEDITOR) => {
     } else {
       chooseAnything(e.target, ie);
     }
-    // changeImgState(e.target);
+
+    const nodes = Transformers?.getNodes();
+    if (
+      nodes?.length === 1 &&
+      nodes[0].name() === "thingGroup" &&
+      nodes[0].draggable() === false
+    ) {
+      turnDrag(stage, false);
+    } else {
+      turnDrag(stage, true);
+    }
   });
 };
