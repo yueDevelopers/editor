@@ -53,8 +53,9 @@ class Scraper {
       this.config.top = p.y;
     }
     const thingLayer = layer(this.stage, "thing");
-    const thingGroup = thingLayer.findOne(`#${thingInfo.iu}`);
+
     if (!p) {
+      const thingGroup = thingLayer.findOne(`#${thingInfo.iu}`);
       this.thingGroup = thingGroup as Konva.Group;
       this.group = this.thingGroup.findOne(".thingImage");
       this.config.width =

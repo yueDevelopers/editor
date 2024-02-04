@@ -62,6 +62,7 @@ export const loadTemplate = async (ie, json, point) => {
     ...tempThingLay.find("Text"),
   ].forEach((node) => {
     const position = node.getAbsolutePosition();
+
     if (position.x < min.x) {
       min.x = position.x;
     }
@@ -78,6 +79,7 @@ export const loadTemplate = async (ie, json, point) => {
       min.y = position.y;
     }
   });
+  console.log(min);
   // 线相关添加
   const lineLay = ie
     .getStage()
@@ -103,6 +105,7 @@ export const loadTemplate = async (ie, json, point) => {
     id: UUID(),
     name: "group",
   });
+  ie.thingLayer.add(group);
   for (let i = 0; i < tempThingLayChildren.length; i++) {
     const node = tempThingLayChildren[i];
     if (node.getClassName() === "Group") {
@@ -112,10 +115,10 @@ export const loadTemplate = async (ie, json, point) => {
     group.add(node);
     resetComponent(ie, node);
   }
-  ie.thingLayer.add(group);
+
   await resetImg(imageArr);
   // 组位置设置
-  group.setAbsolutePosition({
+  group.position({
     x: point.x - min.x,
     y: point.y - min.y,
   });

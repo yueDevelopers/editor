@@ -5,7 +5,7 @@ import INLEDITOR from "@/index";
 export const getTreeNodesAndGroup = (group: Konva.Group) => {
   const arr = [];
   group?.children.forEach((node: Konva.Node) => {
-    if (node.name() === "group" || node.name() === "thingGroup") {
+    if (node.name() === "group") {
       arr.push(node);
       arr.push(...getTreeNodesAndGroup(node as Konva.Group));
     } else {
@@ -70,5 +70,7 @@ export const delGroup = (ie: INLEDITOR) => {
   Transformers?.nodes().forEach((node: Konva.Group, index: number) => {
     node.setAbsolutePosition(oldArr[index]);
   });
+  ie.lastChooseMode = "multi";
+  ie.lastGroup = undefined;
   ie.opt.onSelectCb("multi", { target: Transformers?.nodes() });
 };

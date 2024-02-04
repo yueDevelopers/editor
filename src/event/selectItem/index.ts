@@ -15,11 +15,8 @@ import { createTran, resetEvent, setTransferNode } from "@/util/element/choose";
 import { set } from "lodash";
 import { turnDrag } from "@/util/line/rect";
 
-// 上次选择的组
-let lastGroup;
 // 如果不是拖动选择的子组
 let nextGroup;
-let lastChooseMode;
 export const chooseAnything = (target: Konva.Node, ie: INLEDITOR) => {
   const stage = ie.getStage();
   let transformers = stage.findOne("Transformer") as Konva.Transformer;
@@ -57,13 +54,16 @@ export const chooseAnything = (target: Konva.Node, ie: INLEDITOR) => {
       }
     } else {
       // 组内元素
-      const lastSon = getAncestorSon(localThingGroup, lastGroup);
+      const lastSon = getAncestorSon(localThingGroup, ie.lastGroup);
 
       // 同源组最小节点
-      if (lastGroup === localThingGroup || lastGroup?.name() === "thingImage") {
+      if (
+        ie.lastGroup === localThingGroup ||
+        ie.lastGroup?.name() === "thingImage"
+      ) {
         if (
           localThingGroup.name() === "thingGroup" &&
-          lastGroup.name() !== "thingImage"
+          ie.lastGroup.name() !== "thingImage"
         ) {
           nodes.push(...currentNodes);
           nextGroup = {
@@ -94,15 +94,15 @@ export const chooseAnything = (target: Konva.Node, ie: INLEDITOR) => {
   if (!transformers) {
     transformers = createTran(localThingGroup, ie);
     layer(stage, "util").add(transformers);
-    lastGroup = newGroup;
+    ie.lastGroup = newGroup;
     setTransferNode(transformers, nodes);
-    lastChooseMode = "single";
+    ie.lastChooseMode = "single";
   }
   // 选中了新的
   else if (!have) {
-    lastGroup = newGroup;
+    ie.lastGroup = newGroup;
     setTransferNode(transformers, nodes);
-    lastChooseMode = "single";
+    ie.lastChooseMode = "single";
   }
 };
 export const chooseSomething = (target: Konva.Node, ie: INLEDITOR) => {};
@@ -125,13 +125,13 @@ export default (ie: INLEDITOR) => {
     if (nextGroup && cbData.operation === "click") {
       if (nextGroup.node.name() !== "group") {
         setTransferNode(transformers, [nextGroup.node]);
-        lastChooseMode = "single";
+        ie.lastChooseMode = "single";
       } else {
         setTransferNode(transformers, [...nextGroup.node.children]);
-        lastChooseMode = "single";
+        ie.lastChooseMode = "single";
       }
 
-      lastGroup = nextGroup.node;
+      ie.lastGroup = nextGroup.node;
     }
 
     nextGroup = undefined;
@@ -139,11 +139,11 @@ export default (ie: INLEDITOR) => {
     const res: Konva.Node[] = transformers?.getNodes();
     cbData.target = res;
     let type = "";
-    if (lastChooseMode === "multi") {
+    if (ie.lastChooseMode === "multi") {
       type = "multi";
-    } else if (lastGroup) {
-      type = lastGroup.name();
-      cbData.target = lastGroup;
+    } else if (ie.lastGroup) {
+      type = ie.lastGroup.name();
+      cbData.target = ie.lastGroup;
     } else if (res?.length === 1) {
       type = res[0].name();
       cbData.target = res[0];
@@ -182,8 +182,8 @@ export default (ie: INLEDITOR) => {
       e.target.name() === "grid"
     ) {
       resetEvent(ie.getStage());
-      lastChooseMode = undefined;
-      lastGroup = undefined;
+      ie.lastChooseMode = undefined;
+      ie.lastGroup = undefined;
       return;
     }
     if (
@@ -204,7 +204,7 @@ export default (ie: INLEDITOR) => {
     const currentNodes = Transformers?.getNodes() || [];
     if ((e.evt.ctrlKey || e.evt.metaKey) && Transformers) {
       Transformers.nodes([...currentNodes, getSelectEle(e.target).node]);
-      lastChooseMode = "multi";
+      ie.lastChooseMode = "multi";
     } else if (e.evt.shiftKey && Transformers) {
       const arr = currentNodes.map((node: Konva.Node) => {
         return getAncestorGroup(node);
@@ -213,7 +213,7 @@ export default (ie: INLEDITOR) => {
       const newArr = Array.from(new Set(arr));
       const node = getAncestorGroup(e.target);
       Transformers.nodes([...newArr, node]);
-      lastChooseMode = "multi";
+      ie.lastChooseMode = "multi";
     } else {
       chooseAnything(e.target, ie);
     }

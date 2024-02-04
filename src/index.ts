@@ -154,6 +154,8 @@ class INLEDITOR {
   undoManager;
   // 操作记录
   historyArr = [];
+  lastGroup;
+  lastChooseMode;
   saveHistory = () => {
     const json = this.stage.toJSON();
     this.historyArr.push(json);
