@@ -53,6 +53,8 @@ import { undoReset } from "./util/history";
 import { addGroup } from "./util/element/groups";
 import { setMaintainState, setSignToTop } from "./util/preview/maintain";
 import { resetEvent } from "./util/element/choose";
+import { loadTemplate } from "./util/element/loadTemplate";
+import { addBtn } from "./util/element/addBtn";
 
 export type DrawState =
   | "Line"
@@ -134,10 +136,14 @@ class INLEDITOR {
       this.stage.attrs.drawState = "default";
     }
     console.log("init");
-    // setTimeout(() => {
-    //   addGroup(this);
-    // }, 5000);
+    setTimeout(() => {
+      // loadTemplate(this, json, { x: 100, y: 100 });
+      // addBtn(this, "6157196859740463");
+    }, 5000);
   }
+  addTemplate = (json, point) => {
+    loadTemplate(this, json, point);
+  };
   keyUp = (e) => {
     keyup(e, this);
   };
@@ -148,6 +154,8 @@ class INLEDITOR {
   undoManager;
   // 操作记录
   historyArr = [];
+  lastGroup;
+  lastChooseMode;
   saveHistory = () => {
     const json = this.stage.toJSON();
     this.historyArr.push(json);
@@ -295,7 +303,9 @@ class INLEDITOR {
 
     const field: Konva.Node = this.getStage().find(".field")[0];
     field.setAttrs({ fill: FieldTheme[themeType].fill });
-    resetLine(this);
+    const lineLayer = layer(this.stage, "line");
+    const lineArr = [...lineLayer.find("Arrow"), ...lineLayer.find("Line")];
+    resetLine(this, lineArr);
     changeTheme(this, themeType, cb);
   }
   // 预览挂牌

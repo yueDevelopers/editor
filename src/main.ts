@@ -13,6 +13,7 @@ export * from "./component";
 export * from "./";
 export { addThingImage, addLine } from "./util/test";
 export * from "./util/line/setWidth";
+export * from "./util/element/addBtn";
 export * from "./util/line/switchArrow";
 export { addLineText } from "./util/line/line";
 export * from "./util/element/lock";

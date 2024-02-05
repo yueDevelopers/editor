@@ -53,6 +53,7 @@ export default function (this: LineAnimate) {
     animate.play();
   };
   this.start = () => {
+    this.opt.line.moveToTop();
     this.animateEl.moveToTop();
     this.runState = true;
     if (animate) {

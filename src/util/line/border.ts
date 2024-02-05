@@ -73,16 +73,14 @@ export const addLineBorder = (line: Konva.Line, ie: INLEDITOR) => {
   line.setAttrs = newSet;
 };
 
-export const resetLine = (ie) => {
-  const stage = ie.getStage();
-  const lineLayer = layer(stage, "line");
-  const lineArr = [...lineLayer.find("Arrow"), ...lineLayer.find("Line")];
+export const resetLine = (ie, lineArr: Konva.Node[]) => {
   for (let i = 0; i < lineArr.length; i++) {
     const line: Konva.Arrow = lineArr[i] as Konva.Arrow;
     if (line.name().indexOf("border") > -1) {
-      line.remove();
+      line.destroy();
     } else {
       line.name("line");
+      line.setAttrs({ dash: [8] });
       if (line.parent.name() !== "thingGroup") {
         const group = createThingGroup({});
         group.setAttrs({ draggable: false });

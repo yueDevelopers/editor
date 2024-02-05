@@ -102,11 +102,8 @@ export const setThingChildPosition = (
       });
     } else {
       const xy = computedXY(stage, x, y);
-
-      g.setPosition({
-        x: i.position.x + xy.x,
-        y: i.position.y + xy.y,
-      });
+      g.x(i.position.x + (g.parent.x() ? 0 : xy.x));
+      g.y(i.position.y + (g.parent.y() ? 0 : xy.y));
     }
   };
   creatext.batchAddText(arr, cb);

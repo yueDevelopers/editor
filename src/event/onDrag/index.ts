@@ -1,9 +1,10 @@
 import INLEDITOR from "../..";
 import { closeSubLine, initSubLine } from "./subline";
 import { dealRelation } from "../../util/element/relation";
-import { getCustomAttrs } from "@/main";
+import { getCustomAttrs, getThingImage, getTreeNodes } from "@/main";
 import Konva from "konva";
 import layer from "@/util/layer";
+import { turnDrag } from "@/util/line/rect";
 
 export default (ie: INLEDITOR, cb?: (node) => void) => {
   const stage: Konva.Stage = ie.getStage();
@@ -11,7 +12,7 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
   stage.on("dragstart", (e: any) => {
     const transformer: Konva.Transformer = stage.findOne("Transformer");
     const nodes = transformer?.getNodes();
-
+    // turnDrag(stage, true);
     // 线随动
     if (nodes?.length > 1) {
       nodes.forEach((group: Konva.Group) => {
@@ -27,8 +28,7 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
       });
     }
   });
-  // 按下移动
-  stage.on("dragmove", (e: any) => {
+  const dragmove = (e: any) => {
     if (e.target.name() === "field") {
       return;
     }
@@ -38,7 +38,6 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
     }
     // 块关联线随动
     let target;
-
     if (
       e.target.nodeType === "Shape" ||
       e.target.nodeType === "Image" ||
@@ -51,25 +50,32 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
     const transformer: Konva.Transformer = stage.findOne("Transformer");
     const nodes = transformer?.getNodes();
     if (nodes?.length > 1) {
-      if (e.target.getClassName() === "Transformer") {
-        nodes.forEach((ele: Konva.Group) => {
-          if (ele.name() === "thingGroup") {
-            const img = ele.children.find(
-              (ele: Konva.Node) => ele.name() === "thingImage"
-            );
-            dealRelation(img, ie.getStage(), imgs);
-          } else if (ele.name() === "thingImage") {
-            dealRelation(ele, ie.getStage(), imgs);
-          }
-        });
-      } else {
-        const have = nodes.find((ele) => target?.parent.id() === ele.id());
-        if (have) {
-          return;
+      // if (e.target.getClassName() === "Transformer") {
+      nodes.forEach((ele: Konva.Group) => {
+        if (ele.name() === "thingGroup") {
+          const img = ele.children.find(
+            (ele: Konva.Node) => ele.name() === "thingImage"
+          );
+          dealRelation(img, ie.getStage(), imgs);
+        } else if (ele.name() === "thingImage") {
+          dealRelation(ele, ie.getStage(), imgs);
+        } else if (ele.name() === "group") {
+          const nodes = getTreeNodes(ele);
+          nodes.forEach((node: Konva.Node) => {
+            if (node.name() === "thingGroup") {
+              const img = getThingImage(node as Konva.Group);
+              dealRelation(img, ie.getStage(), imgs);
+            }
+          });
         }
-      }
-    }
-    if (target) {
+      });
+      // } else {
+      //   const have = nodes.find((ele) => target?.parent.id() === ele.id());
+      //   if (have) {
+      //     return;
+      //   }
+      // }
+    } else if (target) {
       dealRelation(target, ie.getStage());
     }
     // 取消选中没了
@@ -82,9 +88,10 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
     // }
 
     cb ? cb(e.target) : null;
-  });
-  // 结束拖动
-  stage.on("dragend", (e: any) => {
+  };
+
+  stage.on("dragmove", dragmove);
+  const dragend = (e: any) => {
     e.target.attrs.state = undefined;
     // 网格吸附
     let target;
@@ -122,5 +129,6 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
     }
     ie.saveHistory();
     imgs = [];
-  });
+  };
+  stage.on("dragend", dragend);
 };

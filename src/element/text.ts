@@ -13,6 +13,7 @@ import { createText } from "./texts";
 import inputText from "./texts/inputText";
 import switchText from "./texts/switchText";
 import { changeTextLabel } from "@/util/element/text";
+import { UUID } from "@/util/uuid";
 
 const createTextFun = {};
 createTextFun[groupNames.thingDefTextGroup] = createThingDefaultText;
@@ -74,6 +75,7 @@ export const createEditableText = (
     draggable: true,
     editable: true,
     width: 200,
+    id: UUID(),
     x,
     y,
   });

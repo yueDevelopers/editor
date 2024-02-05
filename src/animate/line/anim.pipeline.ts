@@ -7,6 +7,7 @@ export default function (this: LineAnimate) {
   let animate;
   const sign = this.opt.direction === "obey" ? -1 : 1;
   const distance = getTotalDistance(this.opt.line.points());
+  
   const init = (i) => {
     animate = new Konva.Tween({
       node: this.opt.line,
@@ -22,6 +23,7 @@ export default function (this: LineAnimate) {
     animate.play();
   };
   this.start = () => {
+    this.opt.line.parent.moveToTop();
     this.runState = true;
     if (animate) {
       animate.play();

@@ -81,5 +81,5 @@ export const addMapTitle = (
 };
 
 export const getThingImage = (thingGroup: Konva.Group) => {
-  return thingGroup.children.find((node) => node.name() === "thingImage");
+  return thingGroup.children?.find((node) => node.name() === "thingImage");
 };

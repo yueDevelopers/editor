@@ -8,8 +8,8 @@ export const setNodePosition = (node, position: { x?: number; y?: number }) => {
     const x = node.x() + target.x();
     const y = node.y() + target.y();
     const change = {
-      x: (position.x || x) - x,
-      y: (position.y || y) - y,
+      x: (position.x === undefined ? x : position.x) - x,
+      y: (position.y === undefined ? y : position.y) - y,
     };
     node.setAttrs({
       x: node.x() + change.x,

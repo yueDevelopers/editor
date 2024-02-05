@@ -26,24 +26,28 @@ class BELT {
     info: {
       thingInfo: Thing;
       p?: { x: number; y: number };
+      item?: Konva.Group;
     }
   ) {
     this.stage = stage;
-    this.createThingGroup(info.thingInfo, info.p);
+    this.createThingGroup(info.thingInfo, info.p, info.item);
     this.config.iu = info.thingInfo.iu;
   }
   name = "BELT";
 
-  createThingGroup(thingInfo: Thing, p?: { x: number; y: number }) {
+  createThingGroup(
+    thingInfo: Thing,
+    p?: { x: number; y: number },
+    item?: Konva.Group
+  ) {
     if (p) {
       this.config.left = p.x;
       this.config.top = p.y;
     }
     const thingLayer = layer(this.stage, "thing");
-    const thingGroup = thingLayer.findOne(`#${thingInfo.iu}`);
 
     if (!p) {
-      this.thingGroup = thingGroup as Konva.Group;
+      this.thingGroup = item.parent as Konva.Group;
       this.group = this.thingGroup.findOne(".thingImage");
       this.config.width =
         this.group.getClientRect().width / this.stage.scaleX();
@@ -51,7 +55,10 @@ class BELT {
       setCustomAttrs(this.group, {
         scale: this.config.width / this.config.defaultWidth,
       });
-      this.group.children?.forEach((ele) => ele.destroy());
+      for (let i = 0; i < this.group.children.length; i++) {
+        this.group.children[i].destroy();
+        i--;
+      }
       this.draw.init();
     } else {
       this.group = new Konva.Group({

@@ -2,14 +2,23 @@ import Konva from "konva";
 import INLEDITOR from "@/index";
 import { groupNames } from "@/element/group";
 import { getCustomAttrs } from "@/util/customAttr";
+import { getThingImage, getTreeNodes, getTreeNodesAndGroup } from "@/main";
 
 export default (ie: INLEDITOR, e: KeyboardEvent) => {
   const Transformers = ie
     .getStage()
     .find("Transformer")[0] as Konva.Transformer;
   const nodes = Transformers?.getNodes() || [];
-  for (let i = 0; i < nodes.length; i++) {
-    const item = nodes[i];
+  const deleteNodes = [];
+  nodes.forEach((item) => {
+    if (item.name() === "group") {
+      deleteNodes.push(...getTreeNodes(item as Konva.Group));
+    } else {
+      deleteNodes.push(item);
+    }
+  });
+  for (let i = 0; i < deleteNodes.length; i++) {
+    const item = deleteNodes[i];
     if (item.name() === "field") {
       continue;
     }
@@ -44,6 +53,9 @@ export const removeRelevance = (obj: Konva.Node, stage: Konva.Stage) => {
     if (obj.parent?.name() === "thingGroup") {
       obj.parent?.remove();
     }
+  }
+  if (obj?.name() === "thingGroup") {
+    obj = getThingImage(obj as Konva.Group);
   }
   if (
     obj?.className === "Rect" ||

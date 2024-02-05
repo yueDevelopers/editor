@@ -50,12 +50,15 @@ export const whetherIncloudInArr = (node: Konva.Node, arr: Konva.Node[]) => {
       res = true;
       break;
     }
-    if (ele.name() === "group") {
-      if (whetherIncloudInArr(node, (ele as Konva.Group).children)) {
-        res = true;
-        break;
-      }
+    // if (ele.name() === "group") {
+    if (
+      ele.hasChildren() &&
+      whetherIncloudInArr(node, (ele as Konva.Group).children)
+    ) {
+      res = true;
+      break;
     }
+    // }
   }
   return res;
 };

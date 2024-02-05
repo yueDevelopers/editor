@@ -39,23 +39,28 @@ class Scraper {
     info: {
       thingInfo: Thing;
       p?: { x: number; y: number };
+      item?: Konva.Node;
     }
   ) {
     this.stage = stage;
-    this.createThingGroup(info.thingInfo, info.p);
+    this.createThingGroup(info.thingInfo, info.p, info.item);
     this.config.iu = info.thingInfo.iu;
   }
   name = "Scraper";
 
-  createThingGroup(thingInfo: Thing, p?: { x: number; y: number }) {
+  createThingGroup(
+    thingInfo: Thing,
+    p?: { x: number; y: number },
+    item?: Konva.Node
+  ) {
     if (p) {
       this.config.left = p.x;
       this.config.top = p.y;
     }
     const thingLayer = layer(this.stage, "thing");
-    const thingGroup = thingLayer.findOne(`#${thingInfo.iu}`);
+
     if (!p) {
-      this.thingGroup = thingGroup as Konva.Group;
+      this.thingGroup = item.parent as Konva.Group;
       this.group = this.thingGroup.findOne(".thingImage");
       this.config.width =
         this.group.getClientRect().width / this.stage.scaleX();
@@ -142,6 +147,7 @@ class Scraper {
           width: 31,
           height: 26,
           name: "left",
+          id: UUID(),
         });
         img.setAttrs({ src: scraperLeft });
         this.group.add(img);
@@ -157,6 +163,7 @@ class Scraper {
           width: 42,
           height: 26,
           name: "right",
+          id: UUID(),
         });
         img.setAttrs({ src: scraperRight });
         this.group.add(img);
@@ -173,6 +180,7 @@ class Scraper {
         stroke: "black",
         strokeWidth: 0.5,
         draggable: false,
+        id: UUID(),
       });
       this.group.add(this.rect);
       setCustomAttrs(this.thingGroup, { state: this.config.theme });

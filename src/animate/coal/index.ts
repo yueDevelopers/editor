@@ -12,7 +12,7 @@ interface COALANIM {
   animGroup: Konva.Group; // 动画组
   cacheCoal: Konva.Star | Konva.Image; // 缓存煤炭
   tim: any; // 定时器
-  startX: number; // 移动距离
+  startX: number; // 图片动画开始前相对偏移量
   direction: "left" | "right"; // 煤炭移动方向
 }
 
@@ -42,8 +42,7 @@ class COALANIM {
   clipGroup;
 
   async reset(uuid: string, imgUrl: string) {
-    this.cacheCoal = await drawCoal(imgUrl);
-    this.cacheCoal.cache();
+    this.cacheCoal = await drawCoal();
     const layerthing = layer(this.stage, "thing");
     this.animEl = (layerthing.findOne(`#${uuid}`) as Konva.Group).findOne(
       ".thingImage"
@@ -54,12 +53,10 @@ class COALANIM {
       return;
     }
     const backward = getCustomAttrs(this.animEl).backward;
-
     this.direction = backward ? "right" : "left";
     const { width, height } = this.animEl.getClientRect();
     const point = this.animEl.getAbsolutePosition();
     const { x, y } = computedXY(this.stage, point.x, point.y);
-    this.startX = x;
     const scale = this.stage.scaleX();
 
     this.animGroup = new Konva.Group({
@@ -79,11 +76,29 @@ class COALANIM {
       },
       name: "clip",
     });
+    this.animGroup.add(this.cacheCoal);
     this.clipGroup.add(this.animGroup);
     layerthing.add(this.clipGroup);
     layerthing.draw();
+    // left是从左往右
 
-    this.addCoal();
+    if (this.direction === "left") {
+      this.startX =
+        this.animGroup.parent.clipX() + (-1 * this.cacheCoal.attrs.myWidth) / 2;
+    } else {
+      this.startX =
+        this.animGroup.parent.clipX() +
+        this.animGroup.parent.clipWidth() -
+        this.cacheCoal.attrs.myWidth / 2;
+    }
+    this.animGroup.setAttrs({
+      x: this.startX,
+    });
+
+    this.cacheCoal.setAttrs({
+      y: 25 - this.cacheCoal.attrs.myHeight,
+    });
+
     this.animInit();
     const state = getCustomAttrs(this.animEl).state;
     if (state === 1) {
@@ -96,44 +111,27 @@ class COALANIM {
   runState = false;
   tween; // 动画对象
 
-  addCoal() {
-    const { width } = this.animEl.getClientRect();
-    for (let i = width / -30 - 1; i <= width / 30 + 1; i++) {
-      const node = this.cacheCoal.clone() as Konva.Image;
-      node.setAttrs({
-        width: 30,
-        height: 14,
-      });
-      node.setAttrs({
-        x: 30 * i,
-        y: 25 - node.height(),
-      });
-      this.animGroup.add(node);
-    }
-  }
   animInit() {
     const { width } = this.animEl.getClientRect();
     const scale = this.stage.scaleX();
     const point = this.animEl.getAbsolutePosition();
     const right = point.x + this.animEl.width() / scale;
-    // left是从左往右
-    if (this.direction !== "left") {
-      this.animGroup.x(right);
-    }
+
     this.tween = new Konva.Tween({
       node: this.animGroup,
       // rotation: 360,
-      duration: 2,
-      x: this.direction === "left" ? right : this.startX,
+      duration: 5,
+      x:
+        this.direction === "left"
+          ? this.animGroup.parent.clipX()
+          : this.animGroup.parent.clipX() +
+            this.animGroup.parent.clipWidth() -
+            this.cacheCoal.attrs.myWidth,
     });
     this.tween.play();
     this.tween.onFinish = () => {
       if (this.runState) {
-        if (this.direction === "left") {
-          this.animGroup.x(this.startX);
-        } else {
-          this.animGroup.x(right);
-        }
+        this.animGroup.x(this.startX);
         this.tween.reset();
         this.tween.play();
       }
