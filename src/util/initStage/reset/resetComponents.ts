@@ -11,14 +11,16 @@ import layer from "@/util/layer";
 import Konva from "konva";
 import INLEDITOR from "../../../index";
 
-export const resetComponent = (ie: INLEDITOR, item: Konva.Node) => {
+export const resetComponent = (ie: INLEDITOR, item: Konva.Group) => {
   const { componentName } = item.getAttrs();
   const { thing } = getCustomAttrs(item.parent);
   if (componentName && componentName === "BELT") {
-    ie.componentArr.push(new BELT(ie.getStage(), { thingInfo: thing }));
+    ie.componentArr.push(new BELT(ie.getStage(), { thingInfo: thing, item }));
   }
   if (componentName && componentName === "Scraper") {
-    ie.componentArr.push(new Scraper(ie.getStage(), { thingInfo: thing }));
+    ie.componentArr.push(
+      new Scraper(ie.getStage(), { thingInfo: thing, item })
+    );
   }
   if (componentName && componentName === "Technique") {
     new Technique(ie.getStage(), { thingInfo: thing });
@@ -40,7 +42,7 @@ export const resetComponent = (ie: INLEDITOR, item: Konva.Node) => {
 
 export default (ie: INLEDITOR) => {
   const thingLayer = layer(ie.getStage(), "thing");
-  thingLayer.find(".thingImage").forEach((item) => {
+  thingLayer.find(".thingImage").forEach((item: Konva.Group) => {
     resetComponent(ie, item);
   });
 };

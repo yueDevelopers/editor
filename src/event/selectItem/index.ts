@@ -203,7 +203,9 @@ export default (ie: INLEDITOR) => {
     let Transformers = stage.findOne("Transformer") as Konva.Transformer;
     const currentNodes = Transformers?.getNodes() || [];
     if ((e.evt.ctrlKey || e.evt.metaKey) && Transformers) {
-      Transformers.nodes([...currentNodes, getSelectEle(e.target).node]);
+      const node = getSelectEle(e.target).node;
+      node.setAttrs({ draggable: true });
+      setTransferNode(Transformers, [...currentNodes, node]);
       ie.lastChooseMode = "multi";
     } else if (e.evt.shiftKey && Transformers) {
       const arr = currentNodes.map((node: Konva.Node) => {
@@ -212,7 +214,7 @@ export default (ie: INLEDITOR) => {
       //数组去重
       const newArr = Array.from(new Set(arr));
       const node = getAncestorGroup(e.target);
-      Transformers.nodes([...newArr, node]);
+      setTransferNode(Transformers, [...newArr, node]);
       ie.lastChooseMode = "multi";
     } else {
       chooseAnything(e.target, ie);

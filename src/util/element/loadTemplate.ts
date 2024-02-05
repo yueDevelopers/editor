@@ -79,7 +79,6 @@ export const loadTemplate = async (ie, json, point) => {
       min.y = position.y;
     }
   });
-  console.log(min);
   // 线相关添加
   const lineLay = ie
     .getStage()
@@ -100,6 +99,7 @@ export const loadTemplate = async (ie, json, point) => {
   });
   console.log(thingArr);
   const imageArr = [];
+  const thingGroupArr = [];
   const tempThingLayChildren = [...tempThingLay.children];
   const group = new Konva.Group({
     id: UUID(),
@@ -113,10 +113,14 @@ export const loadTemplate = async (ie, json, point) => {
     }
 
     group.add(node);
-    resetComponent(ie, node);
   }
 
   await resetImg(imageArr);
+  thingArr.forEach((id) => {
+    const thingGroup: Konva.Group = group.findOne(`#${id}`);
+    resetComponent(ie, getThingImage(thingGroup) as Konva.Group);
+  });
+
   // 组位置设置
   group.position({
     x: point.x - min.x,

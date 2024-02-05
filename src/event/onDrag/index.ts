@@ -4,6 +4,7 @@ import { dealRelation } from "../../util/element/relation";
 import { getCustomAttrs, getThingImage, getTreeNodes } from "@/main";
 import Konva from "konva";
 import layer from "@/util/layer";
+import { turnDrag } from "@/util/line/rect";
 
 export default (ie: INLEDITOR, cb?: (node) => void) => {
   const stage: Konva.Stage = ie.getStage();
@@ -11,6 +12,7 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
   stage.on("dragstart", (e: any) => {
     const transformer: Konva.Transformer = stage.findOne("Transformer");
     const nodes = transformer?.getNodes();
+    // turnDrag(stage, true);
     // 线随动
     if (nodes?.length > 1) {
       nodes.forEach((group: Konva.Group) => {
@@ -48,31 +50,31 @@ export default (ie: INLEDITOR, cb?: (node) => void) => {
     const transformer: Konva.Transformer = stage.findOne("Transformer");
     const nodes = transformer?.getNodes();
     if (nodes?.length > 1) {
-      if (e.target.getClassName() === "Transformer") {
-        nodes.forEach((ele: Konva.Group) => {
-          if (ele.name() === "thingGroup") {
-            const img = ele.children.find(
-              (ele: Konva.Node) => ele.name() === "thingImage"
-            );
-            dealRelation(img, ie.getStage(), imgs);
-          } else if (ele.name() === "thingImage") {
-            dealRelation(ele, ie.getStage(), imgs);
-          } else if (ele.name() === "group") {
-            const nodes = getTreeNodes(ele);
-            nodes.forEach((node: Konva.Node) => {
-              if (node.name() === "thingGroup") {
-                const img = getThingImage(node as Konva.Group);
-                dealRelation(img, ie.getStage(), imgs);
-              }
-            });
-          }
-        });
-      } else {
-        const have = nodes.find((ele) => target?.parent.id() === ele.id());
-        if (have) {
-          return;
+      // if (e.target.getClassName() === "Transformer") {
+      nodes.forEach((ele: Konva.Group) => {
+        if (ele.name() === "thingGroup") {
+          const img = ele.children.find(
+            (ele: Konva.Node) => ele.name() === "thingImage"
+          );
+          dealRelation(img, ie.getStage(), imgs);
+        } else if (ele.name() === "thingImage") {
+          dealRelation(ele, ie.getStage(), imgs);
+        } else if (ele.name() === "group") {
+          const nodes = getTreeNodes(ele);
+          nodes.forEach((node: Konva.Node) => {
+            if (node.name() === "thingGroup") {
+              const img = getThingImage(node as Konva.Group);
+              dealRelation(img, ie.getStage(), imgs);
+            }
+          });
         }
-      }
+      });
+      // } else {
+      //   const have = nodes.find((ele) => target?.parent.id() === ele.id());
+      //   if (have) {
+      //     return;
+      //   }
+      // }
     } else if (target) {
       dealRelation(target, ie.getStage());
     }

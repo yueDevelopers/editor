@@ -101,5 +101,4 @@ export const dealRelation = (
       line.setAttrs({ points: line.attrs.points });
     }
   });
-  stage.batchDraw();
 };
