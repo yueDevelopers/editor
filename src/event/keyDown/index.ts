@@ -9,6 +9,7 @@ import { UUID } from "@/util/uuid";
 import { dealRelation } from "@/util/element/relation";
 import { turnDrag } from "@/util/line/rect";
 import { toSelectOne } from "@/util/element/choose";
+import { getThingImage } from "@/main";
 
 export const keydown = (e, ie) => {
   const stage = ie.getStage();
@@ -57,9 +58,7 @@ export const keyup = (e, ie) => {
     if (nodes.length >= 1) {
       nodes.forEach((ele) => {
         ele.y(ele.y() - 1);
-        if (ele.name() === "thingImage") {
-          dealRelation(ele, ie.getStage());
-        }
+        dealRelationByArrow(ele, ie);
       });
     }
   } else if (e.code === "ArrowDown") {
@@ -68,9 +67,7 @@ export const keyup = (e, ie) => {
     if (nodes.length >= 1) {
       nodes.forEach((ele) => {
         ele.y(ele.y() + 1);
-        if (ele.name() === "thingImage") {
-          dealRelation(ele, ie.getStage());
-        }
+        dealRelationByArrow(ele, ie);
       });
     }
   } else if (e.code === "ArrowLeft") {
@@ -79,9 +76,7 @@ export const keyup = (e, ie) => {
     if (nodes.length >= 1) {
       nodes.forEach((ele) => {
         ele.x(ele.x() - 1);
-        if (ele.name() === "thingImage") {
-          dealRelation(ele, ie.getStage());
-        }
+        dealRelationByArrow(ele, ie);
       });
     }
   } else if (e.code === "ArrowRight") {
@@ -90,9 +85,7 @@ export const keyup = (e, ie) => {
     if (nodes.length >= 1) {
       nodes.forEach((ele) => {
         ele.x(ele.x() + 1);
-        if (ele.name() === "thingImage") {
-          dealRelation(ele, ie.getStage());
-        }
+        dealRelationByArrow(ele, ie);
       });
     }
   } else if (e.ctrlKey && e.code === "KeyZ") {
@@ -136,6 +129,15 @@ export const keyup = (e, ie) => {
     });
   }
 };
+
+const dealRelationByArrow = (node: Konva.Node, ie) => {
+  if (node.name() === "thingImage") {
+    dealRelation(node, ie.getStage());
+  } else if (node.name() === "thingGroup") {
+    dealRelation(getThingImage(node as Konva.Group), ie.getStage());
+  }
+};
+
 export default (ie: INLEDITOR, bind?: boolean) => {
   const container = ie.getContainer();
   if (bind !== false) {
