@@ -12,7 +12,7 @@ export default (ie: INLEDITOR, e: KeyboardEvent) => {
   const deleteNodes = [];
   nodes.forEach((item) => {
     if (item.name() === "group") {
-      deleteNodes.push(...getTreeNodes(item as Konva.Group));
+      deleteNodes.push(...getTreeNodesAndGroup(item as Konva.Group));
     } else {
       deleteNodes.push(item);
     }
@@ -26,11 +26,14 @@ export default (ie: INLEDITOR, e: KeyboardEvent) => {
     const isThingText = item.getParent().hasName(groupNames.thingDefTextGroup);
     Transformers.destroy();
     removeRelevance(item, ie.getStage());
-    if (isThing || isThingText) {
+    if (
+      isThing ||
+      isThingText ||
+      (item.parent.name() === "group" && item.parent.children.length === 1)
+    ) {
       item.getParent().remove();
     } else {
-      // 删除关联关系
-      item.remove();
+      item.destroy();
     }
     ie.opt.onRemoveCb?.();
     ie.getStage().draw();
