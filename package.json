@@ -2,9 +2,8 @@
   "type": "module",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "rollup --config rollup.config.js",
-    "dev": "rollup --config rollup.config.js -w",
-    "site": "vite ./site"
+    "build": "rollup --config rollup.build.js -w",
+    "dev": "rollup --config rollup.config.js -w"
   },
   "devDependencies": {
     "@rollup/plugin-image": "^3.0.2",
@@ -30,6 +29,7 @@
     "dayjs": "^1.11.7",
     "gifler": "^0.1.0",
     "inl-ui": "0.1.0-rc.140",
+    "rollup-plugin-terser": "^7.0.2",
     "undo-manager": "^1.1.1",
     "vue": "^3.2.47"
   }

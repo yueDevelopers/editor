@@ -1,6 +1,9 @@
+import image from "@rollup/plugin-image";
 import typescript from "@rollup/plugin-typescript";
 import dts from "rollup-plugin-dts";
+import { terser } from "rollup-plugin-terser";
 import { entry } from "./entry.cjs";
+
 const rollupConfig = [];
 const externals = ["konva", "lodash"];
 // 打包核心包文件
@@ -11,11 +14,11 @@ for (let i of entry) {
     input: i.root,
     output: [
       {
-        file: `../editorDist/${type}index.js`,
+        file: `build/${type}index.js`,
         format: "es",
       },
     ],
-    plugins: [typescript()],
+    plugins: [typescript(), image(), terser()],
   });
 
   // 生成相关d.ts
@@ -24,7 +27,7 @@ for (let i of entry) {
     external: externals,
     output: [
       {
-        file: `../editorDist/${type}index.d.ts`,
+        file: `build/${type}index.d.ts`,
         format: "es",
       },
     ],

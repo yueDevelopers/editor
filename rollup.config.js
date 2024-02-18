@@ -1,7 +1,9 @@
 import image from "@rollup/plugin-image";
 import typescript from "@rollup/plugin-typescript";
 import dts from "rollup-plugin-dts";
+import { terser } from "rollup-plugin-terser";
 import { entry } from "./entry.cjs";
+
 const rollupConfig = [];
 const externals = ["konva", "lodash"];
 // 打包核心包文件
@@ -16,7 +18,7 @@ for (let i of entry) {
         format: "es",
       },
     ],
-    plugins: [typescript(), image()],
+    plugins: [typescript(), image(), terser()],
   });
 
   // 生成相关d.ts
